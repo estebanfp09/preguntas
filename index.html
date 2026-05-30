@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Preguntas NEPQ — IUL</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── TOKENS ───────────────────────────────────────────────── */
+:root {
+  --bg:  #ffffff; --bg2: #f7f8fa; --bg3: #eef0f4;
+  --border: #e2e5ec; --border2: #d0d4de;
+  --text: #1a1d24; --text2: #5a6070; --text3: #9099aa;
+  --accent: #2563eb; --accent-dim: rgba(37,99,235,0.07); --accent-border: rgba(37,99,235,0.22);
+  --green: #15803d; --green-dim: rgba(62,207,142,0.10); --green-border: rgba(62,207,142,0.32);
+  --amber: #b45309; --amber-dim: rgba(245,166,35,0.10); --amber-border: rgba(245,166,35,0.32);
+  --red:   #dc2626; --red-dim:   rgba(242,107,107,0.10); --red-border:   rgba(242,107,107,0.32);
+  --purple:#7c3aed; --purple-dim:rgba(167,139,250,0.10); --purple-border:rgba(167,139,250,0.28);
+  --teal:  #0f766e; --teal-dim:  rgba(45,212,191,0.10);  --teal-border:  rgba(45,212,191,0.28);
+  --orange:#c2410c; --orange-dim:rgba(249,115,22,0.10);  --orange-border:rgba(249,115,22,0.28);
+  --rose:  #be185d; --rose-dim:  rgba(225,29,122,0.10);  --rose-border:  rgba(225,29,122,0.28);
+  --radius: 10px; --radius-sm: 6px;
+}
+
+/* ─── RESET + BASE ─────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+}
+.wrap { max-width: 740px; margin: 0 auto; }
+
+/* ─── HEADER ───────────────────────────────────────────────── */
+.app-header {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.app-title { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.app-sub   { font-size: 13px; color: var(--text2); }
+
+/* ─── TYPE SELECTOR ────────────────────────────────────────── */
+.type-selector {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 1.75rem;
+}
+.type-btn {
+  padding: 12px 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+.type-btn .type-label {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+.type-btn .type-name  { font-size: 12px; font-weight: 500; color: var(--text2); line-height: 1.4; }
+.type-btn:hover       { border-color: var(--border2); background: var(--bg3); }
+
+.type-btn.sel-all  { border-color: var(--border2); background: var(--bg3); }
+.type-btn.sel-all .type-label { color: var(--text2); }
+.type-btn.sel-all .type-name  { color: var(--text); }
+
+.type-btn.sel-a { border-color: var(--accent-border); background: var(--accent-dim); }
+.type-btn.sel-a .type-label { color: var(--accent); }
+.type-btn.sel-a .type-name  { color: var(--text); }
+
+.type-btn.sel-b { border-color: var(--green-border); background: var(--green-dim); }
+.type-btn.sel-b .type-label { color: var(--green); }
+.type-btn.sel-b .type-name  { color: var(--text); }
+
+.type-btn.sel-c { border-color: var(--teal-border); background: var(--teal-dim); }
+.type-btn.sel-c .type-label { color: var(--teal); }
+.type-btn.sel-c .type-name  { color: var(--text); }
+
+.type-btn.sel-d { border-color: var(--orange-border); background: var(--orange-dim); }
+.type-btn.sel-d .type-label { color: var(--orange); }
+.type-btn.sel-d .type-name  { color: var(--text); }
+
+.type-btn.sel-e { border-color: var(--rose-border); background: var(--rose-dim); }
+.type-btn.sel-e .type-label { color: var(--rose); }
+.type-btn.sel-e .type-name  { color: var(--text); }
+
+/* ─── GROUPS — collapse animation ─────────────────────────── */
+.group {
+  margin-bottom: 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  max-height: 5000px;
+  opacity: 1;
+  transition: max-height 0.32s ease, opacity 0.25s ease, margin-bottom 0.32s ease;
+}
+.group.hidden {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  margin-bottom: 0;
+}
+
+/* ─── GROUP HEADER ─────────────────────────────────────────── */
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  background: var(--bg2);
+  cursor: pointer;
+  user-select: none;
+  min-height: 44px;
+  transition: background 0.15s;
+}
+.group-header:hover { background: var(--bg3); }
+
+.group-head-left { display: flex; align-items: center; gap: 10px; }
+
+.group-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-blue   { background: var(--accent); }
+.dot-green  { background: var(--green); }
+.dot-amber  { background: var(--amber); }
+.dot-red    { background: var(--red); }
+.dot-purple { background: var(--purple); }
+.dot-teal   { background: var(--teal); }
+.dot-gray   { background: var(--text3); }
+.dot-orange { background: var(--orange); }
+.dot-rose   { background: var(--rose); }
+
+.group-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.group-meta  { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+.group-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+/* ─── BADGES ───────────────────────────────────────────────── */
+.gbadge {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.gb-all  { color: var(--text2);   border-color: var(--border2);        background: var(--bg3); }
+.gb-a    { color: var(--accent);  border-color: var(--accent-border);  background: var(--accent-dim); }
+.gb-b    { color: var(--green);   border-color: var(--green-border);   background: var(--green-dim); }
+.gb-c    { color: var(--teal);    border-color: var(--teal-border);    background: var(--teal-dim); }
+.gb-ab   { color: var(--amber);   border-color: var(--amber-border);   background: var(--amber-dim); }
+.gb-ac   { color: var(--purple);  border-color: var(--purple-border);  background: var(--purple-dim); }
+.gb-bc   { color: var(--green);   border-color: var(--green-border);   background: var(--green-dim); }
+.gb-d    { color: var(--orange);  border-color: var(--orange-border);  background: var(--orange-dim); }
+.gb-abd  { color: var(--amber);   border-color: var(--amber-border);   background: var(--amber-dim); }
+.gb-e    { color: var(--rose);    border-color: var(--rose-border);    background: var(--rose-dim); }
+
+.chevron { font-size: 11px; color: var(--text3); transition: transform 0.22s; margin-left: 4px; }
+
+/* ─── GROUP BODY — accordion transition ────────────────────── */
+.group-body {
+  max-height: 0;
+  overflow: hidden;
+  border-top: 0 solid var(--border);
+  transition: max-height 0.32s ease, border-top-width 0.1s;
+}
+.group-body.open {
+  max-height: 8000px;
+  border-top-width: 1px;
+}
+
+/* ─── QUESTIONS ────────────────────────────────────────────── */
+.question-item {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.question-item:last-child { border-bottom: none; }
+
+.q-tag {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.q-tag.optional   { color: var(--amber); }
+.q-tag.powerful   { color: var(--purple); }
+.q-tag.transition { color: var(--green); }
+.q-tag.new        { color: var(--teal); }
+.q-tag.commitment { color: var(--red); }
+
+.q-text {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text);
+  font-style: italic;
+  background: var(--bg3);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+.q-text:hover  { border-left-color: var(--accent); background: #e8ebf2; }
+.q-text.copied { border-left-color: var(--green) !important; background: rgba(62,207,142,0.07); }
+
+.q-note {
+  margin-top: 7px;
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+  padding-left: 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+.q-note::before { content: "→"; flex-shrink: 0; }
+
+.branch       { margin-top: 10px; }
+.branch-label { font-size: 10px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; padding-left: 2px; }
+.branch-label.yes { color: var(--green); }
+.branch-label.no  { color: var(--amber); }
+
+/* ─── SECTION LABELS ───────────────────────────────────────── */
+.new-pill {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--teal);
+  border: 1px solid var(--teal-border);
+  background: var(--teal-dim);
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-left: 8px;
+}
+.sep { height: 1px; background: var(--border); margin: 1.25rem 0 1rem; }
+.sec-label {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.copy-hint {
+  font-size: 10px;
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+  text-align: right;
+  margin-bottom: 8px;
+}
+
+/* ─── TOAST ────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg2);
+  border: 1px solid var(--green-border);
+  color: var(--green);
+  font-size: 12px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Mono', monospace;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.25s;
+  pointer-events: none;
+  z-index: 99;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+
+/* ─── CASES SECTION ────────────────────────────────────────── */
+.cases-empty {
+  display: none;
+  padding: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text3);
+  font-family: 'DM Mono', monospace;
+  background: var(--bg2);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border2);
+}
+.cases-empty.visible { display: block; }
+
+/* Case accordion */
+.case-group {
+  margin-bottom: 8px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  max-height: 5000px;
+  opacity: 1;
+  transition: max-height 0.32s ease, opacity 0.25s ease, margin-bottom 0.32s ease;
+}
+.case-group.hidden {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+  margin-bottom: 0;
+}
+.case-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  background: var(--bg2);
+  cursor: pointer;
+  user-select: none;
+  min-height: 44px;
+  transition: background 0.15s;
+  gap: 10px;
+}
+.case-header:hover { background: var(--bg3); }
+.case-head-left    { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.case-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.case-meta  { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; margin-top: 2px; }
+.case-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.case-body {
+  max-height: 0;
+  overflow: hidden;
+  border-top: 0 solid var(--border);
+  transition: max-height 0.35s ease, border-top-width 0.1s;
+}
+.case-body.open {
+  max-height: 20000px;
+  border-top-width: 1px;
+}
+
+/* Script content inside case */
+.case-content { padding: 18px 18px 22px; }
+
+.case-section-label {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 20px 0 8px;
+  padding: 6px 10px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--border2);
+  display: block;
+}
+.case-section-label:first-child { margin-top: 0; }
+
+.case-context {
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  font-style: italic;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  line-height: 1.6;
+}
+
+.case-p {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.case-p:last-child { margin-bottom: 0; }
+
+/* Voice-pacing segment colors */
+.seg {
+  display: inline;
+  padding: 1px 0 1px 3px;
+  border-radius: 2px;
+  border-left: 2px solid transparent;
+}
+.seg-green { background: rgba(62,207,142,0.12);  border-left-color: rgba(62,207,142,0.40); }
+.seg-amber { background: rgba(245,166,35,0.12);  border-left-color: rgba(245,166,35,0.40); }
+.seg-red   { background: rgba(242,107,107,0.12); border-left-color: rgba(242,107,107,0.40); }
+
+/* ─── CALCULATOR (Caso 3) ───────────────────────────────────── */
+.calc-block {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: var(--bg3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.calc-title {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+.calc-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.calc-row label {
+  font-size: 13px;
+  color: var(--text2);
+  min-width: 190px;
+  flex-shrink: 0;
+}
+.calc-row input {
+  width: 90px;
+  padding: 7px 10px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.calc-row input:focus { border-color: var(--accent); }
+.calc-result {
+  font-size: 14px;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent);
+  font-weight: 500;
+  padding: 8px 12px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm);
+  min-height: 36px;
+}
+
+.ph { font-style: italic; color: var(--amber); font-weight: 500; }
+
+/* ─── RESPONSIVE ────────────────────────────────────────────── */
+@media (max-width: 580px) {
+  .type-selector { grid-template-columns: 1fr 1fr; }
+  .type-btn .type-name { font-size: 11px; }
+  body { padding: 1.25rem 0.75rem 3rem; }
+  .calc-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .calc-row label { min-width: unset; }
+}
+@media (max-width: 400px) {
+  .type-selector { grid-template-columns: 1fr 1fr; }
+  .case-title { font-size: 12px; }
+  .case-p { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="app-header">
+    <div class="app-title">Preguntas NEPQ — IUL</div>
+    <div class="app-sub">Selecciona el tipo de lead · toca cualquier pregunta para copiarla</div>
+  </div>
+
+  <div class="type-selector">
+    <div class="type-btn" id="btn-all" onclick="setType('all')">
+      <div class="type-label">Todos</div>
+      <div class="type-name">Ver flujo completo</div>
+    </div>
+    <div class="type-btn" id="btn-a" onclick="setType('a')">
+      <div class="type-label">Tipo A</div>
+      <div class="type-name">Sin experiencia · llegó por curiosidad</div>
+    </div>
+    <div class="type-btn" id="btn-b" onclick="setType('b')">
+      <div class="type-label">Tipo B</div>
+      <div class="type-name">Ha invertido antes · tiene contexto</div>
+    </div>
+    <div class="type-btn" id="btn-c" onclick="setType('c')">
+      <div class="type-label">Tipo C</div>
+      <div class="type-name">Solo interesado en ahorrar</div>
+    </div>
+    <div class="type-btn" id="btn-d" onclick="setType('d')">
+      <div class="type-label">Tipo D</div>
+      <div class="type-name">Enfocado en retiro</div>
+    </div>
+    <div class="type-btn" id="btn-e" onclick="setType('e')">
+      <div class="type-label">Tipo E</div>
+      <div class="type-name">Quiere comprar casa</div>
+    </div>
+  </div>
+
+  <!-- PRIMERA PARTE — APERTURA -->
+  <div class="sep"></div>
+  <div class="sec-label">Primera Parte — Apertura y Presentación</div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-purple"></div>
+        <div>
+          <div class="group-title">Apertura — Primera Parte</div>
+          <div class="group-meta">saludo inicial · presentación de la institución · búsqueda de la necesidad</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos los tipos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="case-content">
+
+        <p class="case-p"><span class="seg seg-green">buenos [días/tardes/noches] [nombre],</span><span class="seg seg-amber"> cómo te encuentras?</span></p>
+
+        <p class="case-p"><span class="seg seg-red">me alegra [nombre] mira mi nombre es [mi nombre] yo soy planificador financiero y te llamo para darte la informacion que tu pediste acerca de como crear tu propio fondo de ahorro indexado.</span></p>
+
+        <span class="case-section-label">Presentación de la Institución</span>
+
+        <p class="case-p"><span class="seg seg-green">mira [nombre] antes que todo,</span><span class="seg seg-amber"> debo decirte que trabajo para un rubro que por ley es muy regulado y no se me permite continuar si antes no te hago llegar mi informacion de licencia,</span><span class="seg seg-red"> que es la que me acredita a darte la asesoria para que la revises.</span></p>
+
+        <p class="case-p"><span class="seg seg-green">ademas te enviare tambien la informacion de la compañia aseguradora financiera a la cual represento en esta llamada</span><span class="seg seg-amber"> ¿Ella se llama National,</span><span class="seg seg-red"> no sé si ya habías escuchado de ella o es primera vez?</span></p>
+
+        <p class="case-p"><span class="seg seg-green">Perfecto.</span><span class="seg seg-amber"> Mira,</span><span class="seg seg-red"> National es una institución financiera que trabaja principalmente con todo lo que son cuentas de inversiones,</span><span class="seg seg-green"> planes de retiro</span><span class="seg seg-amber"> y que existe desde el año 1848.</span></p>
+
+        <p class="case-p"><span class="seg seg-red">Es una institución financiera que tiene 176 años de existencia.</span></p>
+
+        <p class="case-p"><span class="seg seg-green">Y bueno,</span><span class="seg seg-amber"> tenemos más de 1.4 millones de clientes aquí en Estados Unidos,</span><span class="seg seg-red"> Somos patrocinadores oficiales de la NASCAR.</span><span class="seg seg-green"> Pero bueno,</span><span class="seg seg-amber"> lo más importante,</span><span class="seg seg-red"> (nombre) Realmente de todo,</span><span class="seg seg-green"> es que esa información que yo te acabo de dar,</span><span class="seg seg-amber"> como la que te voy a seguir dando.</span><span class="seg seg-red"> Lo más importante de todo es que tú la vayas como corroborando,</span><span class="seg seg-green"> ok</span></p>
+
+        <p class="case-p"><span class="seg seg-amber">Tanto la institución financiera como los productos financieros con los cuales trabajamos,</span><span class="seg seg-red"> todos los tipos de cuentas con los que trabajamos,</span><span class="seg seg-green"> todos tienen más tiempo de existencia que el Internet.</span><span class="seg seg-amber"> ¿Ok?</span><span class="seg seg-red"> ¿Tienen más de 30 años de existencia y créeme que hay bastante información sea por Google,</span><span class="seg seg-green"> sea por YouTube o sea por chatGPT acerca de eso,</span><span class="seg seg-amber"> pero es bien importante que tú corrobores,</span><span class="seg seg-red"> es todo ok?</span></p>
+
+        <span class="case-section-label">Primera Parte — Búsqueda de la Necesidad</span>
+
+        <div class="case-context">DESCRIBIR NECESIDAD:</div>
+
+        <p class="case-p"><span class="seg seg-green">perfecto (nombre),</span><span class="seg seg-amber"> vayamos directamente al grano para poder hacerlo.</span><span class="seg seg-red"> Ayúdame a entender un poco qué fue lo que te trajo aquí.</span></p>
+
+        <div class="case-context">(EJEMPLO DE CLIENTES)</div>
+
+        <p class="case-p"><span class="seg seg-green">Tengo clientes que me dicen que estoy buscando crear un fondo para mi retiro.</span><span class="seg seg-amber"> Estoy buscando crear un fondo para el downpayment de mi de mi primera casa o el dinero de la universidad de mis hijos.</span></p>
+
+        <p class="case-p"><span class="seg seg-red">Personas que quieren construir patrimonio que les genere,</span><span class="seg seg-green"> eh,</span><span class="seg seg-amber"> digamos como intereses,</span><span class="seg seg-red"> gente que no se le da muy bien los ahorros,</span><span class="seg seg-green"> y quieren como una estrategia o un plan para poder crear ahorros.</span></p>
+
+        <p class="case-p"><span class="seg seg-amber">¿Pero en el caso de (nombre),</span><span class="seg seg-red"> qué fue lo que lo trajo aquí?</span></p>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="copy-hint">toca cualquier pregunta para copiarla al portapapeles</div>
+
+  <!-- BLOQUE 0.5 — EXPERIENCIA INVERSORA -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 0.5 — Validación de experiencia inversora</div>
+
+  <div class="group" data-types="all,a,b">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-blue"></div>
+        <div>
+          <div class="group-title">¿Ha invertido antes?</div>
+          <div class="group-meta">solo para leads que llegaron por "inversión"</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-ab">tipo A · B</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">apertura suave</div>
+        <div class="q-text" onclick="copyQ(this)">"Perfecto, me alegra que hayas tomado acción. Antes de entrar en detalle, cuéntame, ¿has invertido antes en algo? No importa si fue poco o mucho, cualquier experiencia cuenta."</div>
+        <div class="branch">
+          <div class="branch-label yes">si dice sí →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿En qué invertiste? ¿Cómo te fue? ¿Qué resultados obtuviste?"</div>
+          <div style="margin-top:10px;">
+            <div class="branch-label yes">profundizar · evaluar el resultado →</div>
+            <div class="q-text" onclick="copyQ(this)">"Y esa inversión que hiciste, ¿sientes que te dio los resultados que esperabas, o quedaste con una sensación de que pudo haber sido mejor?"</div>
+          </div>
+          <div style="margin-top:8px;">
+            <div class="branch-label no">si dice que no fue lo que esperaba →</div>
+            <div class="q-text" onclick="copyQ(this)">"¿Qué crees que le faltó? ¿Fue el producto, la información que tenías en ese momento, o algo más?"</div>
+            <div style="margin-top:6px;" class="q-note">casi siempre dice "no me asesoré bien" o "no tenía suficiente información". luego di: "Eso tiene mucho sentido. La mayoría de la gente cuando empieza a mover su dinero lo hace sin una guía clara, y termina poniendo su dinero en algo que no está alineado con lo que realmente necesita. ¿Te gustaría ver cómo se vería eso mismo pero bien estructurado y con una base sólida?"</div>
+          </div>
+          <div style="margin-top:8px;">
+            <div class="branch-label yes">si dice que sí fue buena inversión →</div>
+            <div class="q-text" onclick="copyQ(this)">"Me alegra escuchar eso. Y dime, ¿tiene protección si el mercado cae? ¿O si algo te pasa a ti personalmente, ese dinero sigue creciendo o se detiene?"</div>
+            <div style="margin-top:6px;" class="q-note">estas dos preguntas abren los gaps que el IUL resuelve y que su inversión actual probablemente no tiene.</div>
+          </div>
+        </div>
+        <div class="branch" style="margin-top:8px;">
+          <div class="branch-label no">si dice no →</div>
+          <div class="q-text" onclick="copyQ(this)">"Okay, y ¿qué te llevó a querer empezar ahora? ¿Algo que viste, algo que te dijeron, o simplemente sentiste que era el momento?"</div>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">conocimiento del mercado</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué tan familiarizado estás con cómo funciona el S&P 500? O sea, ¿sabes más o menos cómo funciona, cómo sube, cómo baja?"</div>
+        <div class="q-note">pausa después de la respuesta. no corrijas, solo escucha.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">capacidad real</div>
+        <div class="q-text" onclick="copyQ(this)">"Y dime, cuando hablas de invertir, ¿piensas hacerlo con dinero que tienes separado para esto, o es parte de lo que usas para tus gastos del mes?"</div>
+        <div class="q-note">si dice "del mismo dinero del mes" ya se descalificó como inversionista. no lo señales, sigue.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">reserva de emergencia</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes una reserva de emergencia separada de lo que quieres invertir? Porque una de las reglas básicas de cualquier inversión es no meter dinero que puedas necesitar pronto."</div>
+        <div class="q-note">educa sin atacar. genera confianza en ti como asesor.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag transition">transición maestra</div>
+        <div class="q-text" onclick="copyQ(this)">"Mira, te pregunto todo esto porque hay una diferencia enorme entre alguien que está listo para invertir directo en el mercado y alguien que está en el punto de construir una base financiera sólida primero. Y no hay nada malo con estar en ese segundo punto, de hecho la mayoría de la gente que logra libertad financiera pasó por esa etapa. ¿Sientes que estás más en la etapa de construir esa base, o ya tienes todo eso cubierto?"</div>
+        <div class="q-note">cuando dice "construir la base" — él mismo se reposicionó. entra al bloque 1.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">¿En qué punto está con la compra?</div>
+          <div class="group-meta">validación inicial · explorador vs. avanzado</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">apertura casa</div>
+        <div class="q-text" onclick="copyQ(this)">"Me alegra que lo tengas claro. Cuéntame, ¿en qué punto estás hoy con eso de comprar la casa? ¿Estás apenas explorando la idea o ya tienes algo concreto avanzado?"</div>
+        <div class="branch">
+          <div class="branch-label no">si está explorando →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿Qué te hizo empezar a pensar en esto ahora? ¿Fue algo que viste, algo que viviste, o simplemente sientes que ya es el momento?"</div>
+        </div>
+        <div class="branch">
+          <div class="branch-label yes">si ya tiene algo avanzado →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿Qué has hecho hasta ahora? ¿Hablaste con algún lender, viste propiedades, algo así?"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 1 — SITUACIÓN ACTUAL -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 1 — Situación financiera actual</div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-green"></div>
+        <div>
+          <div class="group-title">¿Cómo maneja su dinero hoy?</div>
+          <div class="group-meta">situation questions · aplica a todos los leads</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">situación actual</div>
+        <div class="q-text" onclick="copyQ(this)">"Mira, yo te quiero dar la mejor recomendación. Ayúdame a entender un poquito tu situación actual. ¿Cómo estás manejando ahora mismo tu dinero? ¿Tienes algo separado para ahorro, alguna cuenta de emergencia, algo así?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">resultados actuales</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Te gustan los resultados que estás obteniendo con tu forma actual de manejar el dinero?"</div>
+        <div class="q-note">nadie va a decir que sí. la respuesta abre el dolor sola.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">dinero propio</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes algún dinero que no sea para pagar bills, que sea solo tuyo, que nadie te lo pueda tocar?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">pausa más larga de la llamada ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"Okay perfecto. Y dime, si pasara algo inesperado mañana, no sé, se daña el carro, una emergencia médica, o pierdes el trabajo por unos meses... ¿con qué contarías para cubrirte?"</div>
+        <div class="q-note">NO rompas el silencio. deja que él lo sienta. luego di: "Entiendo... y eso es más común de lo que crees."</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">emoción</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Y eso te ha generado algo de... algo de preocupación, o has dormido tranquilo con eso?"</div>
+        <div class="q-note">tono concerned. suave, no dramático.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">tiempo en esa situación</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Hace cuánto tiempo llevas en esa misma situación? ¿Es algo de los últimos meses o ya viene de hace años?"</div>
+        <div class="q-note">hace que vea que el problema no es nuevo.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">frenos · objeción futura</div>
+        <div class="q-text" onclick="copyQ(this)">"Y dime, ¿por qué crees que hasta ahora no has logrado ahorrar o invertir más mensualmente? ¿Qué ha sido lo que te ha frenado?"</div>
+        <div class="q-note">guarda esta respuesta. es la objeción que va a aparecer al final.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">Diagnóstico de elegibilidad · casa</div>
+          <div class="group-meta">crédito, deudas, empleo · antes de hablar de la casa</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">crédito</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes idea de cómo está tu crédito hoy? ¿Lo has revisado recientemente?"</div>
+        <div class="q-note">no preguntes el número todavía. solo si está consciente de su situación.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">deudas activas</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes deudas activas ahora mismo — tarjetas, préstamo de carro, student loans? ¿Sabes más o menos cuánto debes en total?"</div>
+        <div class="q-note">el DTI — debt-to-income ratio — es el mayor killer de las aplicaciones hipotecarias. esta pregunta te dice si puede calificar.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">tipo de empleo</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Estás trabajando como empleado con W2, tienes negocio propio, o tienes los dos?"</div>
+        <div class="q-note">el self-employed necesita 2 años de tax returns. si no los tiene, hay que trabajar eso primero.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">historial laboral</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cuánto tiempo llevas en tu trabajo actual?"</div>
+        <div class="q-note">los lenders requieren mínimo 2 años de historial laboral estable. si lleva menos, hay que trabajar ese punto primero.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 2 — CONSECUENCIAS / GAP -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 2 — Consecuencias · abrir el gap</div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">Situación actual de retiro</div>
+          <div class="group-meta">arranque directo · lead ya llegó con intención clara</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">apertura retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"Me alegra que lo tengas claro. Cuéntame, ¿en qué punto estás hoy con tu plan de retiro? ¿Tienes algo ya funcionando o estás empezando desde cero?"</div>
+        <div class="branch">
+          <div class="branch-label yes">si tiene algo funcionando →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿Qué tienes ahora mismo? ¿Un 401k, IRA, ahorros propios, algo más?"</div>
+        </div>
+        <div class="branch">
+          <div class="branch-label no">si está empezando desde cero →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿Qué te llevó a pensar en el retiro ahora? ¿Fue algo que viste, algo que viviste, o simplemente sientes que ya es momento?"</div>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">urgencia matemática ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿A qué edad te gustaría retirarte?"</div>
+        <div style="margin-top:8px;">
+          <div class="q-text" onclick="copyQ(this)">"¿Y cuántos años te quedan para llegar a esa edad?"</div>
+        </div>
+        <div class="q-note">estas dos preguntas juntas crean urgencia matemática sin que tú la menciones. él mismo ve el tiempo que le queda.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">meta de retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes algún número en mente de cuánto necesitarías tener ahorrado para retirarte cómodamente? ¿Alguna vez has hecho ese cálculo?"</div>
+        <div class="q-note">casi nadie lo ha hecho. cuando dice que no: "¿Te gustaría que lo calculáramos juntos ahorita para que tengas ese número claro?" — eso abre directamente la proyección del IUL.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">Evaluar lo que ya tiene · 401k / IRA</div>
+          <div class="group-meta">solo si dijo que tiene algo funcionando</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">diagnóstico del plan actual</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Sabes exactamente cuánto tienes acumulado hoy en ese plan?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">rendimiento real</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Sabes a qué tasa está creciendo ese dinero anualmente?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">pregunta que abre el gap del IUL ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"Si el mercado cae un 30% este año, ¿qué pasa con ese dinero que tienes acumulado?"</div>
+        <div class="q-note">si tiene un 401k o IRA en el mercado, la respuesta es "cae 30% también". eso abre el gap del IUL sin que tú lo menciones.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">protección del plan</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Ese plan que tienes tiene alguna protección si tú faltas o si te enfermas y no puedes trabajar? ¿O solo crece mientras tú estés activo?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,a">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-amber"></div>
+        <div>
+          <div class="group-title">El ancla de los $50 · calcular el gap</div>
+          <div class="group-meta">solo para leads anclados al monto mínimo</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-a">tipo A</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">romper el ancla</div>
+        <div class="q-text" onclick="copyQ(this)">"Cuando viste la publicación de los $50 a la semana, ¿llegaste a hacer algún cálculo de cuánto sería eso en 5 años, 10 años, al ritmo que tú estabas pensando?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag optional">opcional · usar si dice que no calculó</div>
+        <div class="q-text" onclick="copyQ(this)">"Te entiendo, la mayoría de la gente no lo hace al principio. Mira, no te lo digo para presionarte, solo para que estemos en la misma página: $50 a la semana son $200 al mes, $2,400 al año. En 10 años, sin contar intereses, eso son como $24,000. Con intereses del S&P puede ser bastante más, pero la pregunta real es... ¿esa cantidad te alcanzaría para lo que tú me dijiste que querías lograr en 5-10 años?"</div>
+        <div class="q-note">pausa larga. casi siempre van a decir "no es suficiente". el ancla ya se rompió.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">La meta · qué casa, para qué, cuándo</div>
+          <div class="group-meta">entender la visión real antes de hablar de solución</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">visión de la casa</div>
+        <div class="q-text" onclick="copyQ(this)">"Cuéntame, ¿cómo te imaginas esa casa? ¿Tienes en mente alguna zona, algún tamaño, algo específico, o todavía es una idea general?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">expectativa de pago</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes algún número en mente de cuánto quisieras pagar al mes, o de cuánto costaría la casa?"</div>
+        <div class="q-note">casi nadie conoce la diferencia entre precio de la casa y pago mensual. esta pregunta te dice qué tan realista está su expectativa.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">plazo · urgencia matemática ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Para cuándo quisieras estar viviendo en esa casa? ¿Tienes alguna fecha o plazo en mente?"</div>
+        <div class="q-note">la respuesta crea urgencia matemática sola. si dice "en 6 meses" y tiene el crédito en 580, hay que actuar ya.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">propósito</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Esto es para vivir tú con tu familia, o también estás pensando en algo que pueda generar ingreso — como rentar parte de ella?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">El gap del down payment · calcular la brecha</div>
+          <div class="group-meta">problem awareness · hacer visible lo que él aún no ve</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">cálculo del down payment</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Sabes cuánto necesitarías tener ahorrado para el down payment y los closing costs? ¿Alguna vez has hecho ese cálculo?"</div>
+        <div class="q-note">casi nadie incluye los closing costs — entre 3% y 5% del precio de la casa. cuando lo escuchan reaccionan. ese gap abre toda la conversación.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">pausa larga · dejar que procese ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Y hoy, cuánto tienes separado para eso?"</div>
+        <div class="q-note">NO rompas el silencio. deja que él procese la diferencia entre lo que necesita y lo que tiene.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">frenos · objeción futura</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué crees que ha sido lo que más te ha frenado para llegar a ese punto hasta ahora?"</div>
+        <div class="q-note">guarda esta respuesta. es la objeción que va a aparecer al cierre.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">cálculo del tiempo real</div>
+        <div class="q-text" onclick="copyQ(this)">"Si sigues exactamente como estás hoy, sin cambiar nada en tu forma de manejar el dinero, ¿en cuánto tiempo crees que podrías tener lo que necesitas para comprar esa casa?"</div>
+        <div class="q-note">él mismo hace el cálculo. cuando lo verbaliza, casi siempre se da cuenta que es más tiempo del que pensaba.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-amber"></div>
+        <div>
+          <div class="group-title">Presente vs futuro · urgencia sin presión</div>
+          <div class="group-meta">problem awareness questions · todos los leads</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">futuro sin cambios</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cómo te imaginas tu vida financiera en 10 años si sigues exactamente como estás hoy, sin cambiar nada?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">consecuencia visual</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué pasa si no haces nada al respecto y sigues por 5, 10 años más sin un plan estructurado de ahorro y protección?... ¿Cómo te verías a los 60 años?"</div>
+        <div class="q-note">tono concernido, no amenazante. deja que él se imagine la escena.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">consecuencia de salud</div>
+        <div class="q-text" onclick="copyQ(this)">"Si tu cuerpo o tu salud te impidieran trabajar por 6 meses, ¿qué pasaría con tus finanzas?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag optional">opcional</div>
+        <div class="q-text" onclick="copyQ(this)">"Si llegas a los 65 sin haber acumulado lo suficiente, ¿qué vas a hacer? ¿Seguir trabajando? ¿Depender de tus hijos?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">interés mensual · meta real</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Alguna vez has hecho el cálculo de cuánto necesitarías acumular para que los intereses solos te generen un ingreso mensual sin tocar el capital?"</div>
+        <div class="q-note">casi nunca lo han calculado. el silencio aquí abre la puerta a la proyección del IUL.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">El costo de seguir esperando · renta vs. propiedad</div>
+          <div class="group-meta">consequence questions · hacer real el precio de no actuar</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">mercado inmobiliario</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Has pensado en lo que pasa con los precios de las casas mientras esperas? Si el mercado sigue subiendo, ¿qué pasa con esa casa que tienes en mente?"</div>
+        <div class="q-note">tono concernido, no amenazante. el mercado de bienes raíces históricamente sube. él mismo conecta los puntos.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">la renta que se va ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Y mientras sigues rentando, cuánto estás pagando al mes? ¿Alguna vez has calculado cuánto habrás pagado en renta en 5 años sin que eso se convierta en tuyo?"</div>
+        <div class="q-note">si paga $1,500/mes, en 5 años son $90,000 que se fueron. cuando él lo dice en voz alta, la urgencia aparece sola.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">futuro sin cambios · casa</div>
+        <div class="q-text" onclick="copyQ(this)">"Si dentro de 3 años todavía no tienes la casa, ¿cómo te verías en esa situación? ¿Qué estarías sintiendo?"</div>
+        <div class="q-note">tono suave. que visualice el futuro sin el problema resuelto. eso crea el gap emocional.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">emoción</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Eso te ha generado algo de frustración, o lo tienes bajo control?"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 3 — PROTECCIÓN Y DEPENDIENTES -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 3 — Protección y dependientes</div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">El gap entre hoy y su meta de retiro</div>
+          <div class="group-meta">consecuencias específicas de retiro · Seguro Social</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">brecha real</div>
+        <div class="q-text" onclick="copyQ(this)">"Basado en lo que tienes hoy acumulado y los años que te quedan, ¿sientes que vas en buen camino para llegar a tu meta de retiro, o sientes que hay una brecha?"</div>
+        <div class="branch">
+          <div class="branch-label no">cuando dice que hay brecha →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿Qué tan grande sientes que es esa brecha? ¿Es algo pequeño que ajustar o es algo que te preocupa?"</div>
+        </div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">emoción · retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Eso te ha generado algo de preocupación cuando piensas en tu futuro, o lo tienes bajo control?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">Seguro Social · reacción garantizada ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Tienes pensado depender del Seguro Social cuando te retires? ¿Sabes más o menos cuánto te daría eso al mes?"</div>
+        <div class="q-note">el promedio del Social Security es $1,700/mes. cuando lo procesan en voz alta casi siempre reaccionan porque no alcanza para mantener su estilo de vida actual.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">estilo de vida</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Y con ese ingreso podrías mantener el mismo estilo de vida que tienes hoy, o tendrías que bajar mucho tus gastos?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-red"></div>
+        <div>
+          <div class="group-title">¿Quién depende de él?</div>
+          <div class="group-meta">abre los beneficios 2 y 3 del IUL · todos los leads</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">dependientes</div>
+        <div class="q-text" onclick="copyQ(this)">"Además de hacer crecer tu dinero, ¿hay algo más que te gustaría que esto resolviera? Por ejemplo, ¿tienes a alguien que dependa económicamente de ti? ¿Esposa, hijos, papás?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">pregunta emocional más fuerte ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"Y si a ti, Dios no quiera, te pasara algo de salud y no pudieras trabajar 6 meses... ¿qué pasaría con [las personas que mencionó]? ¿Qué pasaría con tus bills?"</div>
+        <div class="q-note">pausa larga. esta pregunta sola puede cerrar la venta. no la rompas.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">Protección durante el camino al retiro</div>
+          <div class="group-meta">qué pasa si algo interrumpe el plan antes de llegar</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">riesgo en el camino</div>
+        <div class="q-text" onclick="copyQ(this)">"Una pregunta importante: entre hoy y el día que te retires, ¿qué pasaría con tu plan de retiro si a ti te pasara algo de salud y no pudieras trabajar por un tiempo?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">herencia · acceso directo ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Y si fallecieras antes de llegar al retiro, ese dinero acumulado le llegaría a tu familia de forma directa o quedaría enredado en procesos legales?"</div>
+        <div class="q-note">pausa larga. casi nadie sabe que un 401k sin beneficiario actualizado puede ir a probate. abre el gap del IUL sin mencionarlo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 4 — REPOSICIONAMIENTO -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 4 — Reposicionamiento inversión → ahorro</div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">Familia e impacto · quién más está en la ecuación</div>
+          <div class="group-meta">dimensión emocional · conectar la casa con protección</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">quién está involucrado</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Esta compra es para ti solo o hay alguien más en la ecuación — pareja, hijos, familia?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag powerful">impacto familiar ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cómo afecta a [las personas que mencionó] el hecho de que todavía no tienen esa casa propia?"</div>
+        <div class="q-note">pausa larga. la respuesta aquí casi siempre es emocional. no la interrumpas.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">protección del plan</div>
+        <div class="q-text" onclick="copyQ(this)">"Y si tú, Dios no quiera, pasaras por un problema de salud o perdieras el trabajo antes de cerrar esa compra, ¿qué pasaría con ese plan?"</div>
+        <div class="q-note">esta pregunta conecta la necesidad de protección con el sueño de la casa. él mismo ve que el plan depende de que todo salga bien.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,a,b">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-purple"></div>
+        <div>
+          <div class="group-title">¿Qué significa "invertir" para él?</div>
+          <div class="group-meta">él mismo se mueve de inversión a ahorro estructurado</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-ab">tipo A · B</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag">definición personal</div>
+        <div class="q-text" onclick="copyQ(this)">"Déjame preguntarte algo importante para que yo pueda asesorarte bien. Cuando tú dices 'invertir', ¿qué significa eso para ti exactamente? ¿Es poner dinero en algo y olvidarte por años, es algo que puedes mover, es para retiro, es para una meta específica?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag">riesgo vs seguridad</div>
+        <div class="q-text" onclick="copyQ(this)">"Te pregunto porque hay una diferencia importante. Invertir directo, tipo comprar acciones tú mismo, tiene la posibilidad de ganar mucho pero también de perder mucho. Si el mercado cae 30% un año, tu dinero cae 30%. ¿Tú estarías cómodo viendo que tu dinero baje así, o preferirías algo que crezca con el mercado pero sin el riesgo de perder?"</div>
+        <div class="q-note">99% va a decir "sin riesgo". en ese momento ya te pidió el IUL.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 5 — SOLUTION AWARENESS -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 5 — Solution Awareness Questions <span class="new-pill">nuevo</span></div>
+
+  <div class="group" data-types="all,a,b">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-teal"></div>
+        <div>
+          <div class="group-title">Visualizar la vida con el problema resuelto</div>
+          <div class="group-meta">lead de inversión · después de las consequence questions</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-ab">tipo A · B</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag new">solution awareness</div>
+        <div class="q-text" onclick="copyQ(this)">"Si tuvieras algo que hiciera crecer tu dinero vinculado al S&P 500 pero sin riesgo de perderlo cuando el mercado baja... ¿cómo cambiaría eso tu tranquilidad financiera día a día?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">proyección positiva</div>
+        <div class="q-text" onclick="copyQ(this)">"Si en 10 años tuvieras $80,000 o $100,000 acumulados generando intereses sin que tú hayas tenido que hacer nada extra... ¿qué significaría eso para ti y tu familia?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">libertad financiera</div>
+        <div class="q-text" onclick="copyQ(this)">"Si pudieras llegar a los 65 años con suficiente dinero acumulado para no depender de nadie y no tener que seguir trabajando... ¿qué significaría eso para ti personalmente?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">plan automático</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cómo cambiaría tu vida saber que tienes un plan funcionando solo, que no depende de tu disciplina mes a mes para crecer?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,c">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-teal"></div>
+        <div>
+          <div class="group-title">Visualizar la vida con ahorro sólido</div>
+          <div class="group-meta">lead de ahorro tipo C · versión enfocada en seguridad</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-c">tipo C</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag new">solution awareness · ahorro</div>
+        <div class="q-text" onclick="copyQ(this)">"Si tuvieras un plan de ahorro automático que no puedas tocar fácilmente, que esté creciendo solo, y que además te proteja si algo te pasa... ¿cómo te sentirías diferente a como te sientes hoy con tu situación financiera?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">proyección familiar</div>
+        <div class="q-text" onclick="copyQ(this)">"Imagínate que dentro de 5 años tu familia tiene una base sólida, hay dinero acumulado, y si algo te pasa mañana ellos están cubiertos... ¿qué tan diferente se vería tu vida comparado con donde estás hoy?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">tranquilidad</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cómo cambiaría tu vida saber que tienes un plan funcionando solo, que no depende de tu disciplina mes a mes para crecer?"</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">Visualizar la vida en el retiro · versión IUL</div>
+          <div class="group-meta">lead tipo D · después de abrir el gap del retiro</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag new">solution awareness · retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"Si existiera una forma de que tu dinero creciera vinculado al S&P 500 pero sin perder nada cuando el mercado cae, y además tuvieras protección durante todo el camino hasta el retiro... ¿eso cambiaría algo en tu plan actual?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new powerful">proyección emocional de retiro ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cómo te sentirías llegando a los [edad de retiro] sabiendo que tienes [su meta] acumulados, sin deudas, sin depender del Seguro Social, y con tu familia protegida si algo te pasó en el camino?"</div>
+        <div class="q-note">usa los números y la edad que él mismo te dio antes. que lo visualice con su propia historia.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">Visualizar la vida con la casa propia</div>
+          <div class="group-meta">lead tipo E · que él se venda la solución a sí mismo</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag new">solución completa · casa</div>
+        <div class="q-text" onclick="copyQ(this)">"Si hoy tuvieras el crédito listo, el down payment en mano, y un plan claro para cerrar esa compra... ¿cómo sería diferente tu vida a como es hoy?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new powerful">el momento de las llaves ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Cómo te sentirías tú — y [las personas que mencionó] — el día que tengas las llaves de esa casa en la mano?"</div>
+        <div class="q-note">pregunta emocional. deja que la respuesta llegue sola. no ayudes. esa respuesta es el cierre.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">significado personal</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué significaría para ti llegar a ese punto — tener algo propio, que sea tuyo, que nadie te pueda quitar?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">casa + protección · conectar el IUL</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Y si además de tener la casa, supieras que tienes un plan financiero que la protege si algo te pasa — a ti o a tu ingreso — durante los próximos 20 o 30 años?"</div>
+        <div class="q-note">esta pregunta conecta el IUL con la casa. no como producto separado, sino como parte del mismo plan.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 6 — QUALIFYING -->
+  <div class="sep"></div>
+  <div class="sec-label">Bloque 6 — Qualifying Questions · medir urgencia <span class="new-pill">nuevo</span></div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-purple"></div>
+        <div>
+          <div class="group-title">¿Qué tan urgente es para él actuar hoy?</div>
+          <div class="group-meta">antes de la transición · elimina el "déjame pensarlo"</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag new">urgencia real</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué tan importante es para ti resolver esto este año, o es algo que sientes que puedes seguir postergando?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">posición para actuar</div>
+        <div class="q-text" onclick="copyQ(this)">"Si encontraras hoy algo que resuelve exactamente lo que me dijiste que estabas buscando, ¿estarías en posición de tomar acción, o hay algo que te lo impediría?"</div>
+        <div class="q-note">si dice que sí — ya no puede decir "déjame pensarlo" al final.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">¿por qué ahora?</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Por qué ahora y no dentro de 6 meses o un año? ¿Qué cambió que te hizo tomar acción hoy?"</div>
+        <div class="q-note">él mismo verbaliza su urgencia. eso lo ancla a actuar.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">escala del 1 al 10</div>
+        <div class="q-text" onclick="copyQ(this)">"En una escala del 1 al 10, ¿qué tan urgente sientes que es tomar acción en esto ahora mismo?"</div>
+        <div class="branch">
+          <div class="branch-label no">si dice 7 o menos →</div>
+          <div class="q-text" onclick="copyQ(this)">"¿Qué tendría que pasar para que fuera un 10?"</div>
+          <div style="margin-top:6px; font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; padding-left:2px;">→ esa respuesta te dice exactamente qué objeción va a aparecer al final.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">Qualifying específico de retiro</div>
+          <div class="group-meta">preguntas adicionales para medir urgencia en retiro</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag new">urgencia retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué tan urgente sientes que es optimizar tu plan de retiro ahora, o crees que todavía tienes tiempo para esperar?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">posición para actuar · retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"Si hoy pudieras hacer un ajuste que te garantizara llegar a tu meta de retiro con más seguridad, ¿estarías en posición de tomar acción?"</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag new">frenos · retiro</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Hay algo que sientas que te ha frenado para tener un plan de retiro más sólido hasta ahora?"</div>
+        <div class="q-note">guarda esta respuesta. es la objeción que va a aparecer al cierre.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPROMISO ANTICIPADO -->
+  <div class="sep"></div>
+  <div class="sec-label">Pregunta de compromiso anticipado</div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-purple"></div>
+        <div>
+          <div class="group-title">Anclar el sí antes de presentar</div>
+          <div class="group-meta">entra a la presentación del IUL después de esta</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag powerful">la más poderosa del flujo ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"[Nombre], siendo completamente honesto contigo mismo, ¿sientes que tienes una base financiera sólida hoy, o sientes que estás construyéndola?"</div>
+        <div class="q-note">nadie en clase media-baja va a decir "tengo base sólida". cuando dice "la estoy construyendo" — te acaba de decir que necesita exactamente lo que vendemos.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag transition">compromiso anticipado · entra a la presentación después</div>
+        <div class="q-text" onclick="copyQ(this)">"Déjame hacerte una pregunta importante antes de continuar. Si yo te mostrara una forma en la que tu dinero esté creciendo vinculado al mercado, pero sin riesgo de perderlo cuando el mercado baja, y al mismo tiempo estás construyendo un ahorro real para [su meta]... si eso resuelve lo que me dijiste que estabas buscando, ¿estarías en posición de moverte hacia adelante hoy?"</div>
+        <div class="q-note">cuando dice "sí" → entra a la transición y luego a la presentación.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,d">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="group-title">Compromiso anticipado · versión retiro</div>
+          <div class="group-meta">usa los números de retiro que él mismo te dio</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag powerful">compromiso anticipado retiro ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"Déjame hacerte una pregunta antes de continuar. Si yo te mostrara cómo llegar a [su meta de retiro] con un plan que crece con el mercado, sin riesgo de perder lo acumulado, y con protección durante todo el camino... si eso resuelve lo que me dijiste que buscabas, ¿estarías en posición de moverte hacia adelante hoy?"</div>
+        <div class="q-note">usa la edad y la meta de retiro que él mismo te dio en el bloque 1. que escuche sus propios números de vuelta.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="group" data-types="all,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-rose"></div>
+        <div>
+          <div class="group-title">Compromiso anticipado · versión casa</div>
+          <div class="group-meta">usa el plazo y la casa que él mismo describió</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-e">tipo E</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag powerful">diagnóstico honesto · casa ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"[Nombre], siendo honesto contigo, ¿sientes hoy que estás en camino claro para comprar esa casa en el tiempo que me dijiste, o sientes que hay cosas que todavía tienes que ordenar primero?"</div>
+        <div class="q-note">nadie va a decir "estoy en camino claro" si tiene el crédito sin trabajar y sin down payment. cuando dice "hay cosas que ordenar" — te acaba de pedir el plan.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag transition">compromiso anticipado · entra a la presentación después</div>
+        <div class="q-text" onclick="copyQ(this)">"Déjame hacerte una pregunta antes de continuar. Si yo te mostrara cómo ordenar tu base financiera de forma que en [el plazo que él dijo] tengas el crédito listo, el dinero para el down payment acumulándose solo, y además un respaldo si algo te pasa en el camino... si eso resuelve lo que me dijiste que necesitabas, ¿estarías en posición de moverte hacia adelante hoy?"</div>
+        <div class="q-note">cuando dice "sí" → entra a la transición y luego a la presentación.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSICIÓN → EDUCACIÓN FINANCIERA -->
+  <div class="sep"></div>
+  <div class="sec-label">Transición → educación financiera</div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-green"></div>
+        <div>
+          <div class="group-title">Puente hacia "señalar el error"</div>
+          <div class="group-meta">pedir permiso antes de educar · del libro</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag transition">di esto después de los qualifying questions</div>
+        <div class="q-text" onclick="copyQ(this)">"Mira, [nombre], te lo agradezco porque eso que me dices es más común de lo que crees. Y tiene mucho sentido, porque nadie nos enseña esto. Ni en la escuela, ni en la casa, ni en el trabajo. Entonces la gente llega a cierta edad y se da cuenta que el tiempo pasó y el dinero no creció. ¿Me permites compartirte algo que a mí me parece importante que sepas antes de tomar cualquier decisión?"</div>
+        <div class="q-note">cuando dice "sí" → entras directo a "señalar el error del lead" en tu script.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMITMENT STAGE -->
+  <div class="sep"></div>
+  <div class="sec-label">Commitment Stage — después de la presentación <span class="new-pill">nuevo</span></div>
+
+  <div class="group" data-types="all,a,b,c,d,e">
+    <div class="group-header" onclick="toggleGroup(this)">
+      <div class="group-head-left">
+        <div class="group-dot dot-red"></div>
+        <div>
+          <div class="group-title">3 preguntas de cierre · en este orden exacto</div>
+          <div class="group-meta">justo antes de hacer la solicitud · no cambiar el orden</div>
+        </div>
+      </div>
+      <div class="group-right">
+        <span class="gbadge gb-all">todos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="group-body">
+      <div class="question-item">
+        <div class="q-tag commitment">pregunta 1 · apertura del compromiso</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Sientes que esto podría ser la respuesta para ti?"</div>
+        <div class="q-note">pausa. espera que diga sí. luego inmediatamente pregunta 2.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag commitment powerful">pregunta 2 · hace que se venda solo ⚡</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Por qué sientes que sí, nada más para entender?"</div>
+        <div class="q-note">el lead verbaliza en voz alta por qué quiere el producto. es casi imposible decir "déjame pensarlo" después de esto.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag commitment">pregunta 3 · ancla el compromiso</div>
+        <div class="q-text" onclick="copyQ(this)">"¿Qué aspectos específicos de lo que vimos hoy sientes que te van a ayudar más?"</div>
+        <div class="q-note">el lead recuerda los beneficios con sus propias palabras. elimina las dudas de último minuto. luego entras directo a la solicitud.</div>
+      </div>
+      <div class="question-item">
+        <div class="q-tag transition">entrada a la solicitud</div>
+        <div class="q-text" onclick="copyQ(this)">"Perfecto. Mira, basado en todo lo que me dijiste, el siguiente paso sería hacer la solicitud. El proceso tarda 3 a 5 días hábiles y ellos verifican dos cosas..."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRANSICIÓN → SCRIPT POR TIPO DE CLIENTE -->
+  <div class="sep"></div>
+  <div class="sec-label">Transición → Script por tipo de cliente</div>
+
+  <div class="cases-empty" id="casos-empty">No hay scripts de transición para el Tipo E (compra de casa).</div>
+
+  <!-- CASO 1 -->
+  <div class="case-group" data-case-types="all,a,c" id="caso-1">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-teal"></div>
+        <div>
+          <div class="case-title">Caso 1 — No ha podido ahorrar nada</div>
+          <div class="case-meta">lead sin ahorros · el dinero siempre se va solo</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-c">tipo C</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="caso-1-content"></div>
+    </div>
+  </div>
+
+  <!-- CASO 2 -->
+  <div class="case-group" data-case-types="all,a,c" id="caso-2">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-teal"></div>
+        <div>
+          <div class="case-title">Caso 2 — Ahorra pero no le rinde</div>
+          <div class="case-meta">tiene hábito de ahorro · el dinero no crece</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-c">tipo C</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="caso-2-content"></div>
+    </div>
+  </div>
+
+  <!-- CASO 3 -->
+  <div class="case-group" data-case-types="all,a,d" id="caso-3">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="case-title">Caso 3 — Quiere retirarse · no tiene nada</div>
+          <div class="case-meta">tiene edad en mente · no hay plan activo</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="caso-3-content"></div>
+    </div>
+  </div>
+
+  <!-- CASO 4 -->
+  <div class="case-group" data-case-types="all,a,d" id="caso-4">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-orange"></div>
+        <div>
+          <div class="case-title">Caso 4 — Tiene algo para retiro · le falta</div>
+          <div class="case-meta">tiene 401k / IRA / ahorros · siente la brecha</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-d">tipo D</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="caso-4-content"></div>
+    </div>
+  </div>
+
+  <!-- CASO 5 -->
+  <div class="case-group" data-case-types="all,a,b" id="caso-5">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-green"></div>
+        <div>
+          <div class="case-title">Caso 5 — Viene por inversión · sin experiencia</div>
+          <div class="case-meta">quiere invertir · base financiera sin trabajar</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-b">tipo B</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="caso-5-content"></div>
+    </div>
+  </div>
+
+  <!-- CASO 6 -->
+  <div class="case-group" data-case-types="all,a,b" id="caso-6">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-green"></div>
+        <div>
+          <div class="case-title">Caso 6 — Viene por inversión · ha invertido antes</div>
+          <div class="case-meta">tiene noción o experiencia previa · huecos que no ve</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-b">tipo B</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="caso-6-content"></div>
+    </div>
+  </div>
+
+
+  <!-- PRESENTACIÓN DEL PRODUCTO -->
+  <div class="sep"></div>
+  <div class="sec-label">Presentación del Producto → IUL</div>
+
+  <div class="case-group" id="presentacion-iul">
+    <div class="case-header" onclick="toggleCase(this)">
+      <div class="case-head-left">
+        <div class="group-dot dot-blue"></div>
+        <div>
+          <div class="case-title">Presentación de Solución: El IUL</div>
+          <div class="case-meta">características · fondo indexado · protección económica · beneficios familiares</div>
+        </div>
+      </div>
+      <div class="case-right">
+        <span class="gbadge gb-all">todos los tipos</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="case-content" id="presentacion-content"></div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+<div class="toast" id="toast"></div>
+<script>
+// ─── CASE CONTENT ───────────────────────────────────────────
+const CASES = {
+1:`<p class="case-context">El lead reconoció en las preguntas que no tiene ahorros, que el dinero se va solo, que nunca le sobra nada al mes.</p>
+<p class="case-p">"Mira, y eso que me estás diciendo es más común de lo que crees. Y no lo digo para que te sientas bien, lo digo porque hay una razón muy concreta de por qué pasa eso — y no tiene que ver con cuánto ganas."</p>
+<p class="case-p">"A ver, dime una cosa. ¿De dónde eres tú?"</p>
+<span class="case-section-label">Educación financiera en nuestros países</span>
+<p class="case-p">"Mira, tanto en Venezuela como en Colombia, como en México, como en la mayoría de Latinoamérica — nosotros no tuvimos una materia en el colegio que se llamara educación financiera o planificación financiera. No existía. Entonces, ¿qué hacemos cuando llegamos aquí y empezamos a generar dinero? Improvisamos. Hacemos lo mejor que podemos, pero improvisamos." porque las finanzas son un habito, y si no tenemos educacion al respecto, pues creamos malos habitos sobre aquello que no nos educamos. pasa igual con la comida, con el ejercicio y todo.</p>
+<p class="case-p">"Y lo que normalmente termina pasando es esto: llega el cheque, se pagan los bills, se paga el carro, se paga el apartamento, se paga la comida — y lo que sobra, si sobra algo, eso es lo que 'se va a ahorrar'. El problema es que casi nunca sobra nada. ¿Te suena familiar?"</p>
+<p class="case-p">"Claro. Y eso no es falta de disciplina tuya. Es que el modelo está al revés. Tú te estás poniendo de último en tu propia lista de gastos."</p>
+<span class="case-section-label">Páguese a sí mismo primero</span>
+<p class="case-p">"En la cultura americana existe algo que se llama páguese a sí mismo primero. Y es exactamente lo que dice: antes de pagarle al rentero, antes de pagarle al banco, antes de pagarle a nadie — lo primero que tú haces cuando te llega el cheque es separar un porcentaje para ti. Un 10%, un 15%, lo que puedas. Ese dinero sale primero y va a un activo. Y después con lo que queda, pagas todo lo demás."</p>
+<p class="case-p">"Y lo que pasa casi siempre es que cuando te falta un poquito para completar algún gasto — uno resuelve. Siempre. Pero cuando te dejas de último, ese dinero que ibas a ahorrar ya no existe."</p>
+<span class="case-section-label">Problema de ahorrar en cuenta de cheques</span>
+<p class="case-p">"Ahora, ¿dónde va ese dinero que te separas? Eso es la otra parte importante — porque el lugar donde lo pones hace toda la diferencia. Y ahí es donde quiero que prestemos atención."</p>
+<p class="case-p">OK eso sin que te des cuenta tambien representa un problema, te voy a mencionar porque:</p>
+<p class="case-p">tu cuenta de cheques esta disenada para dos cosas especificas, para que entre dinero si, pero especialmente para que salga, porque? porque te da herramientas para sacar facilmente dinero. Tú tienes tarjeta de débito. Tienes Zelle.</p>
+<p class="case-p">Es para pagar Billes para para comprar, para gastar. Ellos te cobran por eliminar la friccion de sacar el dinero.</p>
+<p class="case-p">Entonces, psicológicamente, cuando tú dices ay, yo tengo 30.000 en mi cuenta de banco, o 20.000 o 10.000 o 5000. uno se relaja porque psicológicamente uno lo ve como un dinero disponible y eso no es un dinero disponible, eso es un dinero de patrimonio. Eso no está hecho para que me falta para el gas completo o voy a salir para a comer en un restaurante</p>
+<p class="case-p">No. Eso es tu ahorro. Tú lo tienes que respetar. Ok, entonces no es bueno hacer esos ahorros en cuenta de cheques. Es más, estadísticamente, más del 90% de las personas que quieren hacer un ahorro el mediano plazo en una cuenta de cheques No, nunca funciona. Okay. Porque psicológicamente, el dinero que está en la cuenta de cheques estás hecho para gastar.</p>
+<p class="case-p">Luego tenemos las cuentas de ahorro que están hechos como fondo de emergencia y luego hay productos como 401k, las IRAs, las anualidades, los IUL, CDs, muchos tipos de productos financieros. que pues sí, son un poquito más al mediano largo plazo es poner a trabajar el dinero, pero sí te puede generar una ganancia y no un gasto. Una cuenta de cheques te cobra a ti porque el dinero ahí.</p>
+<span class="case-section-label">Ingresos como un negocio</span>
+<p class="case-p">A ver, tú tienes que ver tus ingresos como si fuera un negocio. ¿En qué sentido? Cuando tú haces un negocio, tu negocio tiene ingresos, pero también tiene gastos. Y lo importante es que tus gastos NO sean mas que tus ingresos, porque nunca vas a tener ganancia. Por lo que tú siempre vas a priorizar en un negocio es tu ganancia.</p>
+<p class="case-p">Cómo se ve esto en tus finanzas personales? Si yo gano 4000 y me estoy gastando 4000, tu negocio no está generando ganancias. Tu negocio esta llendo a la quiebra</p>
+<p class="case-p">Realmente es un negocio.</p>
+<span class="case-section-label">El ahorro</span>
+<p class="case-p">Fíjate, para ahorrar existen ciertas cositas que te pueden ayudar, pero realmente no hay mucho atajo. O no hay mucho secreto más que todo. Pues sabes es solo compromisos que uno hace con uno mismo, ademas de ahorrar lo que te permitas y cumplirte a ti mismo, porque eso es un compromiso, ni que tú haces con el banco ni conmigo, sino es realmente eso solo lo decides tú.</p>
+<p class="case-p">es bueno que nos eduquemos acerca de los tipos de productos financieros. ya es que si te pueden llegar a dar un ingreso adicional, pero a largo plazo. Okay.</p>
+<p class="case-p">es importante que para el retiro planifiquemos un plan de ahorro sobre todo cuando estamos en tu situacion donde se nos ha hecho dificil ahorra</p>
+<p class="case-p">Esto es realmente al principio más que todo como primero planificar una inversion pero por medio de un plan de ahorro que todo el mundo tendría que tenerlo. Porque es la base de todo, si no tenemos ahorro en que vamos a invertir?, a que le vamos a sacar intereses?. Si lo vez? Sí, por eso vemos muchas personas de 60, 70 años, 80 años, con todo el respeto, trabajando en un Walmart, no porque ellos quieran, sino porque, sabes, no tuvieron esos hábitos de ahorro.</p>
+<p class="case-p">Entonces trabajamos esa parte, pero en cuentas que te generen intereses o ganancias sobre ese dinero que tú vas acumulando. Y la idea es que tú de aquí a diez años tú dices ok, mira, sabes que yo voy a poner 50k durante los próximos diez años, puse 50 y tengo 80.000. Okay, Tienes una ganancia allí. Tuviste diez años haciéndolo excelente.</p>
+<p class="case-p">Claro. Eh, Si tú vas aumentando esos aportes con el tiempo, lo dejas Quizás más tiempo, pero aumentando aportes. Si las personas pueden llegar a tener allí unos 300, 500.000 $ ahí de activo, de ahorro y ese ahorro está generando intereses todos los años. Y ese interés cuando es grande... grandes sumas de dinero, un 10% de 500.000 son 50.000 y que tú recibas 50.000 al año, estamos hablando de casi 4000 mensuales.</p>
+<p class="case-p">Eso se puede construir, pero obviamente eso no es de un día para otro. Al menos que tú me digas a mí; No, yo es que yo vendí una casa y tengo esto en activos. Tengo un 401k que hay por allá con dinero estancado. Ok, vamos a trabajarlo. Pero ahi ya la situacion ya es otra</p>
+<p class="case-p">Pero de resto es como que tú empiezas conmigo. Quizás un ahorro. Porque ya vimos como te va a ti con los ahorros.</p>`,
+
+2:`<p class="case-context">El lead ha ahorrado algo pero no le rinde o siempre termina usándolo.</p>
+<p class="case-p">"Mira, ya el hecho de que hayas tenido ese hábito es algo. De verdad. La mayoría de la gente no llega ni a eso. Pero déjame decirte algo que quizás nadie te ha dicho todavía."</p>
+<p class="case-p">"¿Tú en qué banco tienes ese ahorro? ¿Chase, Wells Fargo, Bank of America?"</p>
+<p class="case-p">"Okay. ¿Y ese dinero lo tienes en tu cuenta de cheques, en la misma cuenta donde recibes el pago?"</p>
+<p class="case-p">"Ahí está el problema. Y no es culpa tuya — es que nadie te explicó para qué está diseñada cada tipo de cuenta."</p>
+<p class="case-p">"La cuenta de cheques está diseñada para dos cosas: para que el dinero entre y salga. Por eso tiene tarjeta de débito, por eso tiene Zelle, por eso tiene acceso a todo. Esa cuenta no está hecha para guardar — está hecha para gastar. Y psicológicamente, cuando tú ves ese balance disponible, ese dinero se siente como dinero para usar. Aunque tú mentalmente lo hayas separado como 'ahorro'."</p>
+<p class="case-p">"Estadísticamente, más del 90% de las personas que intentan hacer un ahorro a mediano plazo en una cuenta de cheques no lo logran. No porque no quieran — sino porque la herramienta no está diseñada para eso."</p>
+<p class="case-p">"Entonces no es que tú seas indisciplinado. Es que estás usando la herramienta equivocada para el trabajo equivocado."</p>
+<p class="case-p">"Ahora, la otra parte de por qué ese dinero no crece — incluso en una savings account — es que ese dinero no está trabajando para ti. El banco te da, qué, un 0.5%, un 1% al año de interés. La inflación está en un 3.5%, 4%. O sea, técnicamente tu dinero está perdiendo poder adquisitivo mientras tú crees que lo estás cuidando."</p>
+<span class="case-section-label">Transición al ahorro</span>
+<p class="case-p">"¿y si ya tienes el habito de ahorra imaginate si lo haces en una cuenta donde ese dinero te genere intereses mucho mas altos anualmente, una donde está conectado a las 500 empresas más grandes del país generando entre un 8 y un 12% anual — y que además nunca puede bajar cuando el mercado cae? Ahí es donde cambia todo, y dejarias de perder dinero."</p>
+<p class="case-p">imaginate si creas un plan de ahorro con verdadera estructura y retorno que todo el mundo tendría que tenerlo. Porque es la base de todo, si no tenemos ahorro en que vamos a invertir?, a que le vamos a sacar intereses?. Si lo vez? Sí, por eso vemos muchas personas de 60, 70 años, 80 años, con todo el respeto, trabajando en un Walmart, no porque ellos quieran, sino porque, sabes, no tuvieron esos hábitos de ahorro.</p>
+<p class="case-p">Entonces trabajamos esa parte, pero en cuentas que te generen intereses o ganancias sobre ese dinero que tú vas acumulando. Y la idea es que tú de aquí a diez años tú dices ok, mira, sabes que yo voy a poner 50k durante los próximos diez años, puse 50 y tengo 80.000. Okay, Tienes una ganancia allí. Tuviste diez años haciéndolo excelente.</p>
+<p class="case-p">Claro. Eh, Si tú vas aumentando esos aportes con el tiempo, lo dejas Quizás más tiempo, pero aumentando aportes. Si las personas pueden llegar a tener allí unos 300, 500.000 $ ahí de activo, de ahorro y ese ahorro está generando intereses todos los años. Y ese interés cuando es grande... grandes sumas de dinero, un 10% de 500.000 son 50.000 y que tú recibas 50.000 al año, estamos hablando de casi 4000 mensuales.</p>
+<p class="case-p">Eso se puede construir, pero obviamente eso no es de un día para otro. Al menos que tú me digas a mí; No, yo es que yo vendí una casa y tengo esto en activos. Tengo un 401k que hay por allá con dinero estancado. Ok, vamos a trabajarlo. Pero ahi ya la situacion ya es otra</p>
+<p class="case-p">Fíjate, para ahorrar existen ciertas cositas que te pueden ayudar, pero realmente no hay mucho atajo. O no hay mucho secreto más que todo. Pues sabes es solo compromisos que uno hace con uno mismo, ademas de ahorrar lo que te permitas y cumplirte a ti mismo, porque eso es un compromiso, ni que tú haces con el banco ni conmigo, sino es realmente eso solo lo decides tú.</p>
+<span class="case-section-label">Educación financiera en nuestros países</span>
+<p class="case-p">pero si hace falta que nos eduquemos financieramente tambien, Entonces a ver de dónde eres tú? Yo soy de Venezuela.</p>
+<p class="case-p">Bueno, mira, tanto en Venezuela como también creo en (PAIS). Nosotros no teníamos una materia en el colegio que hablara de planificación financiera o de educación financiera. Y eso es lo peor que nos pudo pasar, no tenemos educacion sobre una materia, en consecuencia creamos malos habitos sobre esa area, pasa igual con la comida con todo. Okay, normalmente pues improvisamos con las finanzas, llegamos aquí, empezamos a generar dinero, pero empezamos a improvisar un poco y bueno, hacemos lo mejor que podemos, pero lo que normalmente hacemos es esto.</p>
+<span class="case-section-label">Ingresos como un negocio</span>
+<p class="case-p">es necesario ver tus ingresos como si fuera un negocio. ¿En qué sentido? Cuando tú haces un negocio, tu negocio tiene ingresos, pero también tiene gastos. Y lo importante es que tus gastos NO sean mas que tus ingresos, porque nunca vas a tener ganancia. Por lo que tú siempre vas a priorizar en un negocio es tu ganancia.</p>
+<p class="case-p">Cómo se ve esto en tus finanzas personales? Si yo gano 4000 y me estoy gastando 4000, tu negocio no está generando ganancias. Tu negocio esta llendo a la quiebra</p>
+<p class="case-p">Realmente es un negocio.</p>
+<span class="case-section-label">Páguese a sí mismo primero</span>
+<p class="case-p">Entonces, a ver. En la cultura americana hay algo que se llama páguese a sí mismo primero que se trata de que tú digas. Ok sabes que? yo voy a ahorrar el 10% o el 20% de lo que yo gano. Esto lo voy a poner yo en un activo, sea que hago un ahorro en..... No importa si lo haces conmigo, sin mí o como bajo el colchón, como tú lo quieras hacer.</p>
+<p class="case-p">lo primero es vamos a trabajar un hábito de ahorro. Entonces tú dices ok, yo voy a agarrar, a mí me pagan y yo lo primero que hago es agarrar un 10% y ponerlo en mis cuentas de de inversiones o en mi cuenta de ahorro en lo que sea.</p>
+<p class="case-p">Y después tú le pagas al rentero, le pagas al de la aseguradora, después le pagas al del banco, al del Walmart, porque cuando tú te pones como primero y te llega a faltar un poco para completar, para la aseguranza, uno resuelve.</p>
+<p class="case-p">yo he pasado en muchos momentos de mi vida que he estado bastante apretado, pero divina que? uno gracias a Dios, uno resuelve.</p>
+<p class="case-p">Pero cuando uno se deja de último muchas veces, tu dices ok me quedo esto al final de mes esto es mi ganancia, si es que queda algo. no importa, no pasa nada. Next Vamos por el siguiente mes y caemos como en ese hábito de que siempre creemos que el siguiente mes algo va a cambiar, solo ok.</p>
+<p class="case-p">entonces lo primero es eso. Yo ahorita te voy a explicar un tipo de cuenta que creo que es el que más se va adecuar contigo, pero realmente lo más importante de de todo (nombre) es que que esto sea como empezar a manejar tus finanzas, quizás de una manera un poquito diferente.</p>
+<p class="case-p">Okay, okay. Los productos financieros te van a ayudar y eso es importante. Porqué en el mundo bancario hay muchos tipos de cuentas.</p>`,
+
+3:`<p class="case-context">El lead quiere retirarse, tiene una edad en mente, pero no tiene ningún plan activo. Nada.</p>
+<p class="case-p">"Okay. Y gracias por ser honesto conmigo, porque eso me ayuda a darte la orientación correcta."</p>
+<p class="case-p">"Mira, déjame decirte algo que quizás es incómodo de escuchar pero que es importante. Tú me dijiste que quieres retirarte a los <span class="ph" id="ph-retiro">[edad que dijo]</span>. Y cuántos años tienes hoy? tienes <span class="ph" id="ph-edad">[Edad Actual]</span>."</p>
+<p class="case-p">"Okay. Eso son <span class="ph" id="ph-anos">[X]</span> años. Y hoy, en este momento, no hay nada acumulado trabajando para ese día. Eso no lo digo para presionarte — lo digo porque el tiempo en esto no es un detalle menor. El tiempo es literalmente el ingrediente principal." porque literalmente ya no tienes esos años que pasaron y eso es dinero perdido y menos dinero para el retiro, asi que hay que esforzarnos un poco mas .</p>
+<p class="case-p">Mira, y eso que me estás diciendo es más común de lo que crees. Y no lo digo para que te sientas bien, lo digo porque hay una razón muy concreta de por qué pasa eso — y no tiene que ver con cuánto ganas.</p>
+<p class="case-p">"A ver, dime una cosa. ¿De dónde eres tú?"</p>
+<span class="case-section-label">Educación financiera en nuestros países</span>
+<p class="case-p">"Mira, en nuestros paises nadie nos enseño esto, tanto en venezuela como (pais que dijo), no hay una materia especifica en el colegio que nos enseñe de educacion financiera, Y eso es lo peor que nos pudo pasar, no tenemos educacion sobre una materia, en consecuencia creamos malos habitos sobre esa area, pasa igual con la comida con todo. Okay, normalmente pues improvisamos con las finanzas, llegamos aquí, empezamos a generar dinero, pero empezamos a improvisar un poco y bueno, hacemos lo mejor que podemos, pero lo que normalmente hacemos es esto."</p>
+<p class="case-p">"empezamos a trabajar, a pagar bills, a sobrevivir — y el retiro es algo que 'se planifica después'. Siempre después. El problema es que 'después' llega más rápido de lo que uno cree."</p>
+<p class="case-p">"A ver, piénsalo como un negocio. Tú tienes ingresos, tienes gastos. Pero si en tu negocio personal cada mes los gastos son iguales a los ingresos — tu negocio no está generando ganancias, tu negocio está yendo a la quiebra. Y un retiro se construye con ganancias, con activos, con dinero que trabajo mientras tú trabajabas."</p>
+<span class="case-section-label">Páguese a sí mismo primero</span>
+<p class="case-p">entonces para contruir el retiro siempre recomiendo aplicar una estrategia muy bonita que aprendi cuando comence a estudiar aqui, que es la de pagese a si mismo primero que se trata de que tú digas. Ok sabes que? yo voy a ahorrar el 10% o el 20% de lo que yo gano. Esto lo voy a poner yo en un activo, sea que hago un ahorro en..... No importa si lo haces conmigo, sin mí bajo el colchón, como tú lo quieras hacer.</p>
+<p class="case-p">lo primero es vamos a trabajar un hábito de ahorro. Entonces tú dices ok, yo voy a agarrar, a mí me pagan y yo lo primero que hago es agarrar un 10% y ponerlo en mis cuentas de de inversiones o en mi cuenta de ahorro en lo que sea.</p>
+<p class="case-p">Y después tú le pagas al rentero, le pagas al de la aseguradora, después le pagas al del banco, al del Walmart, porque cuando tú te pones como primero y te llega a faltar un poco para completar, para la aseguranza, uno resuelve.</p>
+<p class="case-p">yo he pasado en muchos momentos de mi vida que he estado bastante apretado, pero divina que? uno gracias a Dios, uno resuelve.</p>
+<p class="case-p">Pero cuando uno se deja de último muchas veces, tu dices ok me quedo esto al final de mes esto es mi ganancia, si es que queda algo. no importa, no pasa nada. Next Vamos por el siguiente mes y caemos como en ese hábito de que siempre creemos que el siguiente mes algo va a cambiar, solo ok.</p>
+<p class="case-p">entonces lo primero es eso. Yo ahorita te voy a explicar un tipo de cuenta que creo que es el que más se va adecuar contigo, pero realmente lo más importante de de todo (nombre) es que que esto sea como empezar a manejar tus finanzas, quizás de una manera un poquito diferente.</p>
+<p class="case-p">Okay, okay. Los productos financieros te van a ayudar y eso es importante. Porqué en el mundo bancario hay muchos tipos de cuentas.</p>
+<p class="case-p">"¿Sabes qué es lo que hace el americano promedio que llega a los 60 sin preocupaciones? Lleva 20, 25, 30 años pagándose a sí mismo primero. Antes de pagar cualquier otra cosa, separó un porcentaje de su ingreso y lo puso a trabajar. Y ese dinero fue creciendo con el mercado, con el tiempo, con el interés compuesto."</p>
+<p class="case-p">"¿Sabes cuánto le paga el Seguro Social al americano promedio al mes cuando se retira? Mil setecientos dólares. $1,700 al mes. ¿Tú podrías mantener tu estilo de vida actual con $1,700 al mes?"</p>
+<p class="case-p">"Nadie puede. Por eso el retiro no se improvisa. Se planifica. Y el mejor momento para haberlo empezado era hace 10 años. El segundo mejor momento es hoy."</p>
+<p class="case-p">"Entonces lo que vamos a hacer es exactamente eso — construirte ese plan. Pero necesito que entiendas algo primero sobre dónde va ese dinero y cómo trabaja, porque el producto importa tanto como el hábito."</p>
+<span class="case-section-label">Ahorro en cuentas de banco</span>
+<p class="case-p">donde ahorras dinero o donde guardas tu dinero actualmente? una cuenta de cheques ahorros ?</p>
+<p class="case-p">"Ahí está el problema. Y no es culpa tuya — es que nadie te explicó para qué está diseñada cada tipo de cuenta."</p>
+<p class="case-p">"La cuenta de cheques está diseñada para dos cosas: para que el dinero entre y salga. Por eso tiene tarjeta de débito, por eso tiene Zelle, por eso tiene acceso a todo. Esa cuenta no está hecha para guardar — está hecha para gastar. Y psicológicamente, cuando tú ves ese balance disponible, ese dinero se siente como dinero para usar. Aunque tú mentalmente lo hayas separado como 'ahorro'."</p>
+<p class="case-p">"Estadísticamente, más del 90% de las personas que intentan hacer un ahorro a mediano plazo en una cuenta de cheques no lo logran. No porque no quieran — sino porque la herramienta no está diseñada para eso."</p>
+<p class="case-p">"Entonces no es que tú seas indisciplinado. Es que estás usando la herramienta equivocada para el trabajo equivocado."</p>
+<p class="case-p">"Ahora, la otra parte de por qué ese dinero no crece — incluso en una savings account — es que ese dinero no está trabajando para ti. El banco te da, qué, un 0.5%, un 1% al año de interés. La inflación está en un 3.5%, 4%. O sea, técnicamente tu dinero está perdiendo poder adquisitivo mientras tú crees que lo estás cuidando."</p>
+<span class="case-section-label">Ingresos como un negocio</span>
+<p class="case-p">A ver, tú tienes que ver tus ingresos como si fuera un negocio. ¿En qué sentido? Cuando tú haces un negocio, tu negocio tiene ingresos, pero también tiene gastos. Y lo importante es que tus gastos NO sean mas que tus ingresos, porque nunca vas a tener ganancia. Por lo que tú siempre vas a priorizar en un negocio es tu ganancia.</p>
+<p class="case-p">Cómo se ve esto en tu En tus finanzas personales? Si yo gano 4000 y me estoy gastando 4000, tu negocio no está generando ganancias. Tu negocio esta llendo a la quiebra</p>`,
+
+4:`<p class="case-context">El lead tiene un 401k, una IRA, ahorros propios — pero reconoce que no es suficiente. Siente la brecha.</p>
+<p class="case-p">"Mira, y eso que tienes ya es un activo real. No lo subestimes. El problema que describes no es que hayas hecho algo mal — es que probablemente nadie te explicó cómo hacer que ese dinero trabaje más duro para ti."</p>
+<p class="case-p">"Déjame hacerte una pregunta. Ese [401k / ahorro / lo que tenga] — ¿sabes exactamente a qué tasa está creciendo por año?"</p>
+<p class="case-p">"Y si el mercado cayera un 30% este año, ¿ese dinero también caería un 30%?"</p>
+<p class="case-p">"Ese es el gap que más preocupa. Porque tú llevas años construyendo algo, y en un mal año el mercado se puede llevar una parte importante de lo que construiste. Y el tiempo que tomó acumularlo no te lo devuelve nadie."</p>
+<p class="case-p">"Ahora, lo otro que quiero que veamos — ¿ese plan tiene algún tipo de protección si a ti te pasara algo antes de llegar al retiro? Si te enfermas, si no puedes trabajar por un tiempo, ¿el plan sigue funcionando o se detiene?"</p>
+<p class="case-p">"Eso es lo que yo llamo el punto ciego del retiro. Tú construyes el plan asumiendo que todo va a salir bien. Pero el plan real es el que funciona aunque algo salga mal."</p>
+<p class="case-p">"Mira, lo que tú tienes hoy es una base. Y eso es valioso. Pero lo que vamos a hacer juntos es complementar eso — no reemplazarlo — con algo que llene exactamente esos dos huecos que acabas de ver: que el dinero que vas acumulando no pueda perder cuando el mercado cae, y que si algo te pasa en el camino, el plan no se rompa."</p>
+<p class="case-p">"Y lo importante de lo que te voy a mostrar es que no estamos empezando de cero. Estamos construyendo sobre lo que ya tienes. Eso hace que el camino al retiro que tienes en mente sea mucho más corto de lo que probablemente crees."</p>
+<span class="case-section-label">Educación financiera en nuestros países</span>
+<p class="case-p">de donde eres [nombre], yo soy de venezuela</p>
+<p class="case-p">mira aunque ya tengamos ciertos hábitos financieros buenos como los tuyos, y eso es positivo. tenemos que darnos cuenta primero porque no tenemos educacion financiera acerca de productos que nos ayuden de verdad a apalancar nuestros ahorros, y es que tanto en Venezuela como también creo en (PAIS). Nosotros no teníamos una materia en el colegio que hablara de planificación financiera o de educación financiera. Y eso es lo peor que nos pudo pasar, no tenemos educacion sobre una materia, en consecuencia creamos malos habitos sobre esa area, pasa igual con la comida con todo. Okay, normalmente pues improvisamos con las finanzas, llegamos aquí, empezamos a generar dinero, pero empezamos a improvisar un poco y bueno, hacemos lo mejor que podemos, pero lo que normalmente hacemos es esto.</p>
+<p class="case-p">lo que te quiero decir con esto tambien es que comencemos a ver nuestras finanzas de una manera diferente, como si fuera un negocio, ¿En qué sentido? Cuando tú haces un negocio, tu negocio tiene ingresos, pero también tiene gastos. Y lo importante es que tus gastos NO sean mas que tus ingresos, porque nunca vas a tener ganancia. Por lo que tú siempre vas a priorizar en un negocio es tu ganancia.</p>
+<p class="case-p">Cómo se ve esto en tu En tus finanzas personales? Si yo gano 4000 y me estoy gastando 4000, tu negocio no está generando ganancias. Tu negocio esta llendo a la quiebra</p>
+<p class="case-p">Realmente es un negocio.</p>
+<span class="case-section-label">Páguese a sí mismo primero</span>
+<p class="case-p">Entonces, a ver. En la cultura americana hay algo que se llama páguese a sí mismo primero que se trata de que tú digas. Ok sabes que? yo voy a ahorrar el 10% o el 20% de lo que yo gano. Esto lo voy a poner yo en un activo, sea que hago un ahorro en..... No importa si lo haces conmigo, sin mí o como bajo el colchón, como tú lo quieras hacer.</p>
+<p class="case-p">lo primero es vamos a trabajar un hábito de ahorro. Entonces tú dices ok, yo voy a agarrar, a mí me pagan y yo lo primero que hago es agarrar un 10% y ponerlo en mis cuentas de de inversiones o en mi cuenta de ahorro en lo que sea.</p>
+<p class="case-p">Y después tú le pagas al rentero, le pagas al de la aseguradora, después le pagas al del banco, al del Walmart, porque cuando tú te pones como primero y te llega a faltar un poco para completar, para la aseguranza, uno resuelve.</p>
+<p class="case-p">yo he pasado en muchos momentos de mi vida que he estado bastante apretado, pero divina que? uno gracias a Dios, uno resuelve.</p>
+<p class="case-p">Pero cuando uno se deja de último muchas veces, tu dices ok me quedo esto al final de mes esto es mi ganancia, si es que queda algo. no importa, no pasa nada. Next Vamos por el siguiente mes y caemos como en ese hábito de que siempre creemos que el siguiente mes algo va a cambiar, solo ok.</p>
+<p class="case-p">entonces lo primero es eso. Yo ahorita te voy a explicar un tipo de cuenta que creo que es el que más se va adecuar contigo, pero realmente lo más importante de de todo (nombre) es que que esto sea como empezar a manejar tus finanzas, quizás de una manera un poquito diferente.</p>
+<p class="case-p">Okay, okay. Los productos financieros te van a ayudar y eso es importante. Porqué en el mundo bancario hay muchos tipos de cuentas.</p>
+<p class="case-p">de esa manera priorizamos nuestra construccion del retiro y la impulsamos muchísimo mas.</p>
+<span class="case-section-label">Ahorra en cuentas de banco</span>
+<p class="case-p">y tambien hay que poner cuidado de en donde ponemos tu dinero, eso tambien es crucial, ya tu haces algo excelente que es ponerla en lugares mas seguros pero no esta demas mencionar que ese dinero que tengamos de mas o que nos entra de mas nunca lo coloquemos en cuentas que nos permitan accesar a el facilmente como una cuenta de cheques incluso una cuenta de ahorros, por mas que sea de ahorros no es muy practico, te explico porque:</p>
+<p class="case-p">tu cuenta de cheques esta diseñada para dos cosas específicas, para que entre dinero si, pero especialmente para que salga, porque? porque te da herramientas para sacar facilmente dinero Tú tienes tarjeta de débito. Tienes Zelle.</p>
+<p class="case-p">Es para pagar Billes para para comprar, para gastar. Ellos te cobran por eliminar la friccion de sacar el dinero.</p>
+<p class="case-p">Entonces, psicológicamente, cuando tú dices ay, yo tengo 30.000 en mi cuenta de banco, o 20.000 o 10.000 o 5000. uno se relaja porque psicológicamente uno lo ve como un dinero disponible y eso no es un dinero disponible, eso es un dinero de patrimonio. Eso no está hecho para que me falta para el gas completo o voy a salir para a comer en un restaurante</p>
+<p class="case-p">No. Eso es tu ahorro. Tú lo tienes que respetar. Ok, entonces no es bueno hacer esos ahorros en cuenta de cheques. Es más, estadísticamente, más del 90% de las personas que quieren hacer un ahorro el mediano plazo en una cuenta de cheques No, nunca funciona. Okay. Porque psicológicamente, el dinero que está en la cuenta de cheques estás hecho para gastar.</p>
+<p class="case-p">Luego tenemos las cuentas de ahorro que están hechos como fondo de emergencia y luego hay productos como 401k, las IRAs, las anualidades, los IUL, CDs, . muchos tipos de productos financieros. que pues sí, son un poquito más al mediano largo plazo es poner a trabajar el dinero, pero sí te puede generar una ganancia y no un gasto. Una cuenta de cheques te cobra a ti porque el dinero ahí.</p>`,
+
+5:`<p class="case-context">El lead llegó motivado por invertir. No ha invertido antes y su base financiera está sin trabajar.</p>
+<p class="case-p">"Mira, y eso que me estás diciendo me alegra mucho escucharlo. Que tú estés aquí, tomando acción, buscando cómo hacer que tu dinero trabaje para ti — eso ya te pone por delante de la mayoría de las personas."</p>
+<p class="case-p">"Pero déjame ser honesto contigo, porque eso es lo que más te va a servir. Hay algo que quiero que veamos primero antes de hablar de inversiones — y te lo digo porque es el error más común que veo en personas que llegan con las mismas ganas que tienes tú de hacer sus primeras inversiones, pero es necesario saber ciertas cosas primero."</p>
+<p class="case-p">"A ver, dime una cosa. ¿De dónde eres tú?"</p>
+<span class="case-section-label">Educación financiera en nuestros países</span>
+<p class="case-p">"Mira, tanto en Venezuela como también creo en (PAIS). Nosotros no teníamos una materia en el colegio que hablara de planificación financiera o de educación financiera. Y eso es lo peor que nos pudo pasar, no tenemos educacion sobre una materia, en consecuencia creamos malos habitos sobre esa area, pasa igual con la comida con todo. Okay, normalmente pues improvisamos con las finanzas, llegamos aquí, empezamos a generar dinero, pero empezamos a improvisar un poco y bueno, hacemos lo mejor que podemos, pero lo que normalmente hacemos es esto."</p>
+<span class="case-section-label">El ahorro como base de toda inversión</span>
+<p class="case-p">"Mira, y eso tiene que ver directamente con lo que tú quieres hacer. Porque hay algo que muy poca gente entiende cuando llega con ganas de invertir — y es esto: si no tenemos ahorro, ¿en qué vamos a invertir? ¿A qué le vamos a sacar intereses? La inversión no es un atajo al ahorro. La inversión es lo que haces con el ahorro que ya tienes."</p>
+<p class="case-p">"y tener tambien un plan de ahorro es 100% necesario, por eso vemos muchas personas de 60, 70 años, 80 años, con todo el respeto, trabajando en un Walmart, no porque ellos quieran, sino porque, sabes, no tuvieron esos hábitos de ahorro."</p>
+<p class="case-p">"Entonces trabajamos esa parte, pero en cuentas que te generen intereses o ganancias sobre ese dinero que tú vas acumulando. Y la idea es que tú de aquí a diez años tú dices ok, mira, sabes que yo voy a poner 50k durante los próximos diez años, puse 50 y tengo 80.000. Okay, Tienes una ganancia allí. Tuviste diez años haciéndolo excelente."</p>
+<p class="case-p">"Claro. Eh, Si tú vas aumentando esos aportes con el tiempo, lo dejas Quizás más tiempo, pero aumentando aportes. Si las personas pueden llegar a tener allí unos 300, 500.000 $ ahí de activo, de ahorro y ese ahorro está generando intereses todos los años. Y ese interés cuando es grande... grandes sumas de dinero, un 10% de 500.000 son 50.000 y que tú recibas 50.000 al año, estamos hablando de casi 4000 mensuales."</p>
+<p class="case-p">"Eso se puede construir, pero obviamente eso no es de un día para otro. Al menos que tú me digas a mí; No, yo es que yo vendí una casa y tengo esto en activos. Tengo un 401k que hay por allá con dinero estancado. Ok, vamos a trabajarlo. Pero ahí ya la situación ya es otra."</p>
+<p class="case-p">"Fíjate, para ahorrar existen ciertas cositas que te pueden ayudar, pero realmente no hay mucho atajo. O no hay mucho secreto más que todo. Pues sabes es solo compromisos que uno hace con uno mismo, ademas de ahorrar lo que te permitas y cumplirte a ti mismo, porque eso es un compromiso, ni que tú haces con el banco ni conmigo, sino es realmente eso solo lo decides tú."</p>
+<span class="case-section-label">Ingresos como un negocio</span>
+<p class="case-p">y como vamos a lograr esto, con varias estrategias muy sencillas, porque las finanzas no son tan dificiles como la gente cree que son</p>
+<p class="case-p">"A ver, primero, tú tienes que ver tus ingresos como si fuera un negocio. ¿En qué sentido? Cuando tú haces un negocio, tu negocio tiene ingresos, pero también tiene gastos. Y lo importante es que tus gastos NO sean mas que tus ingresos, porque nunca vas a tener ganancia. Por lo que tú siempre vas a priorizar en un negocio es tu ganancia."</p>
+<p class="case-p">"Cómo se ve esto en tus finanzas personales? Si yo gano 4000 y me estoy gastando 4000, tu negocio no está generando ganancias. Tu negocio esta llendo a la quiebra."</p>
+<p class="case-p">"Realmente es un negocio."</p>
+<span class="case-section-label">Páguese a sí mismo primero</span>
+<p class="case-p">"Entonces, a ver. lo otro que vamos a aplicar es lo que aplican aqui en la cultura americana que. hay algo que se llama páguese a sí mismo primero que se trata de que tú digas. Ok sabes que? yo voy a ahorrar el 10% o el 20% de lo que yo gano. Esto lo voy a poner yo en un activo, sea que hago un ahorro en..... No importa si lo haces conmigo, sin mí o como bajo el colchón, como tú lo quieras hacer."</p>
+<p class="case-p">"lo primero es vamos a trabajar un hábito de ahorro. Entonces tú dices ok, yo voy a agarrar, a mí me pagan y yo lo primero que hago es agarrar un 10% y ponerlo en mis cuentas de de inversiones o en mi cuenta de ahorro en lo que sea."</p>
+<p class="case-p">"Y después tú le pagas al rentero, le pagas al de la aseguradora, después le pagas al del banco, al del Walmart, porque cuando tú te pones como primero y te llega a faltar un poco para completar, para la aseguranza, uno resuelve."</p>
+<p class="case-p">"yo he pasado en muchos momentos de mi vida que he estado bastante apretado, pero divina que? uno gracias a Dios, uno resuelve."</p>
+<p class="case-p">"Pero cuando uno se deja de último muchas veces, tu dices ok me quedo esto al final de mes esto es mi ganancia, si es que queda algo. no importa, no pasa nada. Next Vamos por el siguiente mes y caemos como en ese hábito de que siempre creemos que el siguiente mes algo va a cambiar, solo ok."</p>
+<p class="case-p">"entonces lo primero es eso. Yo ahorita te voy a explicar un tipo de cuenta que creo que es el que más se va adecuar contigo, pero realmente lo más importante de de todo (nombre) es que que esto sea como empezar a manejar tus finanzas, quizás de una manera un poquito diferente."</p>
+<p class="case-p">"Okay, okay. Los productos financieros te van a ayudar y eso es importante. Porqué en el mundo bancario hay muchos tipos de cuentas."</p>
+<span class="case-section-label">Problema de ahorrar en cuenta de cheques</span>
+<p class="case-p">"Ahora, ¿dónde va ese dinero que te separas? Eso es la otra parte importante — porque el lugar donde lo pones hace toda la diferencia. Y ahí es donde quiero que prestemos atención."</p>
+<p class="case-p">"OK eso sin que te des cuenta también representa un problema, te voy a mencionar porque:"</p>
+<p class="case-p">"tu cuenta de cheques esta diseñada para dos cosas especificas, para que entre dinero si, pero especialmente para que salga, porque? porque te da herramientas para sacar facilmente dinero. Tú tienes tarjeta de débito. Tienes Zelle."</p>
+<p class="case-p">"Es para pagar Billes para para comprar, para gastar. Ellos te cobran por eliminar la friccion de sacar el dinero."</p>
+<p class="case-p">"Entonces, psicológicamente, cuando tú dices ay, yo tengo 30.000 en mi cuenta de banco, o 20.000 o 10.000 o 5000. uno se relaja porque psicológicamente uno lo ve como un dinero disponible y eso no es un dinero disponible, eso es un dinero de patrimonio. Eso no está hecho para que me falta para el gas completo o voy a salir para a comer en un restaurante."</p>
+<p class="case-p">"No. Eso es tu ahorro. Tú lo tienes que respetar. Ok, entonces no es bueno hacer esos ahorros en cuenta de cheques. Es más, estadísticamente, más del 90% de las personas que quieren hacer un ahorro el mediano plazo en una cuenta de cheques No, nunca funciona. Okay. Porque psicológicamente, el dinero que está en la cuenta de cheques estás hecho para gastar."</p>
+<p class="case-p">"Luego tenemos las cuentas de ahorro que están hechos como fondo de emergencia y luego hay productos como 401k, las IRAs, las anualidades, los IUL, CDs, muchos tipos de productos financieros. que pues sí, son un poquito más al mediano largo plazo es poner a trabajar el dinero, pero sí te puede generar una ganancia y no un gasto. Una cuenta de cheques te cobra a ti porque el dinero ahí."</p>`,
+
+6:`<p class="case-context">El lead llegó a invertir y ya tiene experiencia previa — un 401k, acciones, crypto, o al menos tiene noción del tema. Sabe más que el promedio pero probablemente tiene gaps importantes que no ve.</p>
+<p class="case-p">"Mira, y eso ya me dice mucho de ti. Que hayas tomado acción antes, que no sea la primera vez que te sientas a hablar de esto — eso ya te pone en una posición diferente a la mayoría de las personas con las que yo hablo."</p>
+<p class="case-p">"Si dijo que sí le fue bien: 'Me alegra escuchar eso. Entonces lo que vamos a ver hoy es cómo complementar eso y cerrar los huecos que probablemente ese instrumento no cubre.'"</p>
+<p class="case-p">"Si dice que no fue lo esperado o que fue irregular: 'Eso tiene mucho sentido. Y casi siempre hay una razón muy concreta de por qué pasa eso — y no tiene que ver con suerte ni con el mercado.'"</p>
+<p class="case-p">"A ver, dime una cosa. ¿De dónde eres tú?"</p>
+<span class="case-section-label">Educación financiera en nuestros países</span>
+<p class="case-p">"Mira, aunque ya tengamos ciertos hábitos financieros buenos como los tuyos, y eso es positivo, tenemos que darnos cuenta primero porque no tenemos educación financiera acerca de productos que nos ayuden de verdad a apalancar nuestros ahorros. Tanto en Venezuela como también creo en tu país, nosotros no teníamos una materia en el colegio que hablara de planificación financiera o de educación financiera. Y eso es lo peor que nos pudo pasar — en consecuencia creamos malos hábitos sobre esa área. Normalmente improvisamos con las finanzas, llegamos aquí, empezamos a generar dinero, pero improvisamos."</p>
+<span class="case-section-label">Ingresos como un negocio</span>
+<p class="case-p">"Lo que te quiero decir con esto también es que comencemos a ver nuestras finanzas de una manera diferente, como si fuera un negocio. Tu negocio tiene ingresos, pero también tiene gastos. Y lo importante es que tus gastos no sean más que tus ingresos, porque nunca vas a tener ganancia. Lo que tú siempre vas a priorizar en un negocio es tu ganancia."</p>
+<p class="case-p">"¿Cómo se ve esto en tus finanzas personales? Si yo gano 4,000 y me estoy gastando 4,000, tu negocio no está generando ganancias. Tu negocio está yendo a la quiebra."</p>
+<span class="case-section-label">Páguese a sí mismo primero</span>
+<p class="case-p">"En la cultura americana hay algo que se llama páguese a sí mismo primero — se trata de que tú digas: 'Yo voy a ahorrar el 10% o el 20% de lo que yo gano.' Lo primero que tú haces cuando te pagan es agarrar ese 10% y ponerlo en tus cuentas de inversiones o de ahorro."</p>
+<p class="case-p">"Y después le pagas al rentero, a la aseguradora, al banco, al Walmart. Porque cuando tú te pones como primero y te llega a faltar un poco — uno resuelve."</p>
+<p class="case-p">"Pero cuando uno se deja de último muchas veces, tu dices: 'ok, me quedo esto al final de mes, esta es mi ganancia, si es que queda algo.' Y caemos en ese hábito de que siempre creemos que el siguiente mes algo va a cambiar."</p>
+<span class="case-section-label">Ahorra en cuentas adecuadas</span>
+<p class="case-p">"Y también hay que poner cuidado de dónde ponemos el dinero. Tú ya haces algo excelente que es ponerlo en lugares más seguros — pero no está de más mencionar que ese dinero de más que nos entra nunca lo coloquemos en cuentas que nos permitan accederlo fácilmente como una cuenta de cheques o incluso una cuenta de ahorros."</p>
+<p class="case-p">"Tu cuenta de cheques está diseñada para dos cosas: para que entre dinero sí, pero especialmente para que salga. Tienes tarjeta de débito. Tienes Zelle. Es para pagar bills, para comprar, para gastar. Ellos te cobran por eliminar la fricción de sacar el dinero."</p>
+<p class="case-p">"Estadísticamente, más del 90% de las personas que quieren hacer un ahorro a mediano plazo en una cuenta de cheques no lo logran. Porque psicológicamente, el dinero que está en la cuenta de cheques está hecho para gastar. Luego hay productos como 401k, las IRAs, las anualidades, los IUL, CDs — productos que sí te pueden generar una ganancia y no un gasto."</p>
+<span class="case-section-label">Los huecos que tu inversión actual probablemente no cubre</span>
+<p class="case-p">"Mira, y eso que tienes ya es un activo real. No lo subestimes. Pero hay algo que quiero que veamos juntos — porque casi todos los instrumentos de inversión que existen tienen dos huecos que la mayoría de la gente no ve hasta que ya es tarde."</p>
+<p class="case-p">"Déjame hacerte una pregunta. Esa inversión que tienes — si el mercado cayera un 30% este año, ¿ese dinero también caería un 30%?"</p>
+<p class="case-p">"Ese es el primero. Tú llevas tiempo construyendo algo, y en un mal año el mercado se puede llevar una parte importante de lo que construiste. Y el tiempo que tomó acumularlo no te lo devuelve nadie."</p>
+<p class="case-p">"Y el segundo — ¿esa inversión tiene algún tipo de protección si a ti te pasara algo? Si te enfermas, si no puedes trabajar por un tiempo, ¿eso sigue creciendo o se detiene?"</p>
+<p class="case-p">"Eso es lo que yo llamo el punto ciego del inversionista. Tú tienes el hábito, tienes el instrumento — pero el plan no está completo si depende de que todo salga bien."</p>
+<p class="case-p">"Entonces lo que vamos a hacer es exactamente eso — no reemplazar lo que tienes, sino complementarlo con algo que llene esos dos huecos. Y lo importante es que no estamos empezando de cero. Estamos construyendo sobre la base que ya tienes."</p>`
+};
+
+// ─── PRESENTACIÓN DEL PRODUCTO ───────────────────────────────
+const PRESENTACION_IUL = `
+<p class="case-p">Okay. Ahora el producto financiero que es el que te va a cubrir todo y que te va a dar flexibilidad donde No tienes que esperar hasta cierta edad para tu tomar tu dinero OK o para tu empezar a generar intereses, se llama IUL. no sé si has escuchado o es primera vez.</p>
+<span class="case-section-label">CARACTERÍSTICA 1: FONDO DE AHORRO INDEXADO (SP500)</span>
+<p class="case-p">Perfecto. Mira, el IUL digamos, tiene tres características. Tres cosas buenas que te brinda. La primera es que es un fondo de ahorro indexado en el que el todo el dinero que tú vas poniendo allí mensualmente, Imagínatelo como si fuera una cuenta de ahorro. Tú vas poniendo dinero allí mensualmente, ese dinero automáticamente se invierte y se reparte a lo que son las 500 empresas más importantes del país a través de un índice bursátil que se llama SP500.</p>
+<p class="case-p">¿Había escuchado del SP 500 o es primera vez?. Okay. Ese SP500 es el índice que dicta la economía americana. Es un índice que existe hace más de 100 años. Se llama S de Sapo P de papa 500. Lo puedes googlear y vas a ver en qué se basa y cuáles son las ganancias que ha dejado en los últimos años.</p>
+<p class="case-p">ese dinero que vas poniendo alli automáticamente se invierte y se reparte entre las 500 empresas más importantes del país. Ahí está Walmart, Tesla, Apple, todas estas empresas. Okay, ahora todas estas empresas a final de año declaran ganancias hacia los accionistas.</p>
+<p class="case-p">De esa manera es que tu dinero se ve beneficiado.</p>
+<p class="case-p">adicionalmente de que lo que valían las acciones de Amazon o lo que valía Amazon hace diez años atrás no es lo mismo que vale hoy.</p>
+<p class="case-p">¿Qué rendimiento puedes estar esperando? Mira, No existen ganancias garantizadas. Eso es algo que literalmente es ilegal decirlo. Okay. Pero si podemos mirar cuánto ha pagado en los últimos 20, 30 o 40 años este índice. Y si tú investigas, vas a ver casi un promedio de entre un 8 a un 12% por año. Hay años que es más, hay años que es menos.</p>
+<p class="case-p">Por lo menos los últimos diez años ha sido muy bueno, ya dejado alrededor de un 16%. Pero bueno, cuando hacemos como un promedio a largo plazo sabes bien sólido, te va a dar entre un 9, 11% anual de ganancia. Okay. No es nada que te multiplique el dinero de un día para otro, pero sí es un dinero seguro que va a estar generando ganancias poco a poco.</p>
+<p class="case-p">¿Ahora, alguna duda o pregunta? ¿Hasta ahorita? perfecto.</p>
+<span class="case-section-label">CARACTERÍSTICA 2 Y 3: BENEFICIOS DE PROTECCIÓN</span>
+<p class="case-p">Bueno, en el caso de National nosotros te damos un beneficio si eres aprobado para la IUL te vamos a dar dos beneficios más. El primero es una protección económica en caso de enfermedad y porque eso es importante?.</p>
+<p class="case-p">Mira, yo conozco personas que pasan 10, 15 años ahorrando y por algún accidente, por alguna situación de salud. Caen 1 3 meses en cama y les toca romper el cochinito. Y esos diez 15 años que llevan ahorrando empezarlos de cero o peor o peor, se endeudan o hacen gofundme? Okay. Entonces, en el caso del IUL si te prueban la cuenta y todo esto vas a tener una protección económica que en caso de caer en cama tú vas a recibir un dinero mensual de parte de National. y esto permite que tu inversión, tu fondo de ahorro indexado va a seguir ahí generando ganancias intacto.</p>
+<p class="case-p">porque mientras no estás recibiendo ingresos porque estás en cama, tú vas a recibir dinero mensual de parte de National para tu pagar tus billes Con eso, entonces estas protegido por esa parte.</p>
+<p class="case-p">tú tienes hijos, (nombre)?.</p>
+<p class="case-p">Yo tengo un niño pequeño de dos años. Tengo a mi esposa. Tengo a mi mamá que todos ellos dependen financieramente de mi.</p>
+<p class="case-p">Yo tengo mi IUL Si yo me enfermo, caigo en cama. Vamos a estar bien. Por lo menos lo que es la parte económica. Okay. Ahora, esta cobertura, Si Nunca yo la uso en vida por enfermedad Mi familia va a tener acceso a ese dinero en el caso de que yo fallezca.</p>
+<p class="case-p">A ver, mi esposa, mi hijo y mi mamá depende de mí. ¿Qué pasaría si yo fallezco? ¿Qué pasaría con ellos? Mi hijo se tendría que ir de la escuela, mudarnos a una ciudad que sea más económica. Sabes, un montón de cosas. Entonces es increible estar protegido por esa parte.</p>
+<p class="case-p">Bueno. ¿Qué Me da a mi el IUL?, mira el fondo de ahorro indexado en el que voy poniendo dinero. Ese dinero va creciendo y yo lo puedo tomar cuando yo quiera.</p>
+<p class="case-p">Tengo protección económica en caso de caer en Cama y tu familia queda protegida económicamente en caso de un fallecimiento en los próximos 30 años. Okay. Estás como que protegido financieramente por todos lados. Estás protegiendo tu presente. Estás protegiendo tu ingreso y Estás protegiendo tu salud. ¿Qué pasa si mi salud hoy no está?.</p>
+<p class="case-p">Todo sigue perfecto. Y si llego a viejo y me quiero retirar también va a haber dinero. Ok, entonces. Un producto financiero que te cubre bastante. Si, se recomienda mucho para personas que van iniciando.</p>
+<p class="case-p">Y así después de un año tú me dices mira (nombre), tengo más presupuesto, quiero aumentar mi inversión. ¿De repente yo te digo en ese momento; "(nombre), sabes que ese aumento que quieres dar no vamos a usarlo en el IUL, sigue ahorrando en el IUL lo que viene ahorrando, pero vamos a poner este dinero en esta otra cuenta, pero esta otra cuenta te da estos otros beneficios" y así vamos trabajando con juntamente Ok?</p>
+<p class="case-p">¿Alguna duda o pregunta hasta ahora? (nombre).</p>
+`;
+
+function buildPresentacion() {
+  const el = document.getElementById('presentacion-content');
+  if (!el) return;
+  el.innerHTML = PRESENTACION_IUL;
+  segmentCaseContent(el);
+}
+
+// ─── PHRASE SPLITTER ────────────────────────────────────────
+function splitPhrases(text) {
+  const result = [];
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (/[,\.?!]/.test(text[i])) {
+      const frag = text.slice(start, i + 1);
+      if (frag.trim()) result.push(frag);
+      start = i + 1;
+      while (start < text.length && text[start] === ' ') start++;
+      i = start - 1;
+    }
+  }
+  const last = text.slice(start);
+  if (last.trim()) result.push(last);
+  return result.filter(s => s.trim());
+}
+
+// ─── SEGMENT CASE CONTENT ───────────────────────────────────
+function segmentCaseContent(contentEl) {
+  const cols = ['seg-green', 'seg-amber', 'seg-red'];
+  let ci = 0;
+  contentEl.querySelectorAll('.case-p').forEach(p => {
+    const newKids = [];
+    p.childNodes.forEach(node => {
+      if (node.nodeType === 3) {
+        splitPhrases(node.textContent).forEach(phrase => {
+          const s = document.createElement('span');
+          s.className = 'seg ' + cols[ci % 3];
+          ci++;
+          s.textContent = phrase + ' ';
+          newKids.push(s);
+        });
+      } else {
+        newKids.push(node.cloneNode(true));
+      }
+    });
+    while (p.firstChild) p.removeChild(p.firstChild);
+    newKids.forEach(n => p.appendChild(n));
+  });
+}
+
+// ─── BUILD CASES ─────────────────────────────────────────────
+function buildCases() {
+  for (let n = 1; n <= 6; n++) {
+    const el = document.getElementById('caso-' + n + '-content');
+    if (!el) continue;
+    if (n === 3) {
+      const calc = `<div class="calc-block">
+        <div class="calc-title">Calculadora de años al retiro</div>
+        <div class="calc-row">
+          <label>Edad actual del cliente</label>
+          <input type="number" id="calc-edad-actual" placeholder="ej. 38" oninput="actualizarCalc()">
+        </div>
+        <div class="calc-row">
+          <label>Edad de retiro deseada</label>
+          <input type="number" id="calc-edad-retiro" placeholder="ej. 65" oninput="actualizarCalc()">
+        </div>
+        <div class="calc-result" id="calc-resultado">— años hasta el retiro</div>
+      </div>`;
+      el.innerHTML = calc + CASES[n];
+    } else {
+      el.innerHTML = CASES[n];
+    }
+    segmentCaseContent(el);
+  }
+}
+
+// ─── CALCULATOR ──────────────────────────────────────────────
+function actualizarCalc() {
+  const ea = parseInt(document.getElementById('calc-edad-actual').value);
+  const er = parseInt(document.getElementById('calc-edad-retiro').value);
+  const resEl = document.getElementById('calc-resultado');
+  const phEdad  = document.getElementById('ph-edad');
+  const phRetiro = document.getElementById('ph-retiro');
+  const phAnos  = document.getElementById('ph-anos');
+
+  if (!isNaN(ea) && !isNaN(er) && er > ea) {
+    const anos = er - ea;
+    resEl.textContent = anos + ' años hasta el retiro';
+    if (phEdad)  phEdad.textContent  = ea;
+    if (phRetiro) phRetiro.textContent = er;
+    if (phAnos)  phAnos.textContent  = anos;
+  } else {
+    resEl.textContent = '— años hasta el retiro';
+    if (phEdad)  phEdad.textContent  = '[Edad Actual]';
+    if (phRetiro) phRetiro.textContent = '[edad que dijo]';
+    if (phAnos)  phAnos.textContent  = '[X]';
+  }
+}
+
+// ─── ACCORDION — GROUPS ──────────────────────────────────────
+function toggleGroup(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chev.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+// ─── ACCORDION — CASES ───────────────────────────────────────
+function toggleCase(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  chev.style.transform = body.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+
+// ─── CLIPBOARD ───────────────────────────────────────────────
+function copyQ(el) {
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    el.classList.add('copied');
+    setTimeout(() => el.classList.remove('copied'), 1200);
+    showToast('Pregunta copiada ✓');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ─── TYPE FILTER ─────────────────────────────────────────────
+function setType(type) {
+  ['btn-all','btn-a','btn-b','btn-c','btn-d','btn-e'].forEach(id => {
+    document.getElementById(id).className = 'type-btn';
+  });
+  const map = {all:'sel-all',a:'sel-a',b:'sel-b',c:'sel-c',d:'sel-d',e:'sel-e'};
+  document.getElementById('btn-' + type).classList.add(map[type]);
+
+  // question groups
+  document.querySelectorAll('.group[data-types]').forEach(g => {
+    const types = g.getAttribute('data-types').split(',');
+    const show = type === 'all' || types.includes(type);
+    g.classList.toggle('hidden', !show);
+  });
+
+  // case groups
+  const isEmpty = type === 'e';
+  document.getElementById('casos-empty').classList.toggle('visible', isEmpty);
+  document.querySelectorAll('.case-group[data-case-types]').forEach(g => {
+    const types = g.getAttribute('data-case-types').split(',');
+    const show = !isEmpty && (type === 'all' || types.includes(type));
+    g.classList.toggle('hidden', !show);
+  });
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+buildCases();
+buildPresentacion();
+setType('all');
+</script>
+</body>
+</html>
