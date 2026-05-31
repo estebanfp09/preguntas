@@ -464,15 +464,414 @@ body {
   .calc-row { flex-direction: column; align-items: flex-start; gap: 6px; }
   .calc-row label { min-width: unset; }
 }
-@media (max-width: 400px) {
-  .type-selector { grid-template-columns: 1fr 1fr; }
   .case-title { font-size: 12px; }
   .case-p { font-size: 14px; }
+}
+
+/* ─── CO-PILOTO DE TRANSCRIPCIÓN GEMINI ────────────────────── */
+.trans-panel {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+  color: #f1f5f9;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: 'DM Sans', sans-serif;
+}
+.trans-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding-bottom: 12px;
+}
+.trans-title {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+}
+.trans-settings {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-family: 'DM Mono', monospace;
+}
+.trans-key-input {
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: #38bdf8 !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-family: 'DM Mono', monospace !important;
+  outline: none !important;
+  width: 320px !important;
+  max-width: 100% !important;
+  transition: all 0.2s !important;
+}
+.trans-key-input:focus {
+  border-color: #38bdf8 !important;
+  background: #1e293b !important;
+}
+.trans-control-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 0;
+}
+.trans-btn {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
+}
+.trans-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+.trans-btn.active {
+  background: #15803d;
+  box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);
+}
+.trans-btn.active:hover {
+  background: #166534;
+  box-shadow: 0 6px 20px rgba(21, 128, 61, 0.4);
+}
+.trans-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #64748b;
+  display: inline-block;
+}
+.status-indicator.recording {
+  background: #ef4444;
+  animation: pulse-red 1.5s infinite;
+}
+.status-indicator.processing {
+  background: #3b82f6;
+  animation: pulse-blue 1.5s infinite;
+}
+@keyframes pulse-red {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+@keyframes pulse-blue {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+.trans-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+@media (max-width: 768px) {
+  .trans-results {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+.result-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.result-title {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+}
+.result-btn-copy {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+}
+.result-btn-copy:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+.result-box {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  height: 200px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #cbd5e1;
+  white-space: pre-wrap;
+}
+.result-box::-webkit-scrollbar { width: 6px; }
+.result-box::-webkit-scrollbar-track { background: transparent; }
+.result-box::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 3px; }
+.result-box::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* ─── BOTÓN FLOTANTE & DRAWER DE OBJECIONES ───────────────── */
+.float-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+  cursor: pointer;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.float-btn:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.45);
+}
+.float-btn:active {
+  transform: scale(0.98) translateY(0);
+}
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 450px;
+  max-width: 90vw;
+  background: var(--bg);
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open {
+  transform: translateX(0);
+}
+.drawer-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg2);
+}
+.drawer-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.drawer-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  color: var(--text3);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.drawer-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+.acc-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: var(--bg2);
+  transition: border-color 0.2s;
+}
+.acc-item:hover {
+  border-color: var(--border2);
+}
+.acc-header {
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  background: var(--bg2);
+  transition: background 0.15s;
+}
+.acc-header:hover {
+  background: var(--bg3);
+}
+.acc-chevron {
+  font-size: 10px;
+  color: var(--text3);
+  transition: transform 0.2s;
+}
+.acc-item.open .acc-chevron {
+  transform: rotate(180deg);
+}
+.acc-content {
+  max-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.acc-inner {
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.objection-hr {
+  border: none;
+  border-top: 1px dashed var(--border2);
+  margin: 12px 0;
+}
+.objection-placeholder {
+  color: var(--amber);
+  font-weight: 500;
+  background: var(--amber-dim);
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--amber-border);
+}
+.acc-inner h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+.acc-inner h3:first-of-type {
+  margin-top: 0;
+}
+.acc-inner strong {
+  color: var(--text);
+}
+.acc-inner em {
+  font-style: italic;
+  color: var(--text2);
+}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <!-- CO-PILOTO DE TRANSCRIPCIÓN GEMINI (PANEL SUPERIOR) -->
+  <div class="trans-panel">
+    <div class="trans-header">
+      <div class="trans-title">🎙️ Copiloto de Ventas — Transcripción y Análisis</div>
+      <div class="trans-settings">
+        <label for="gemini-api-key">🔑 API Key:</label>
+        <input type="text" id="gemini-api-key" class="trans-key-input" placeholder="Pegar API Key aquí..." onchange="saveApiKey(this.value)">
+      </div>
+    </div>
+    <div class="trans-control-area">
+      <button id="record-btn" class="trans-btn" onclick="toggleRecording()">🎙️ Transcribir Llamada</button>
+      <div class="trans-status">
+        <span id="status-dot" class="status-indicator"></span>
+        <span id="status-text">Inactivo</span>
+      </div>
+    </div>
+    <div class="trans-results">
+      <div class="result-col">
+        <div class="result-header">
+          <span class="result-title">📋 Resumen de la Llamada</span>
+          <button class="result-btn-copy" onclick="copyResultText('call-summary')">📋 Copiar Resumen</button>
+        </div>
+        <div id="call-summary" class="result-box">Los resultados del análisis se mostrarán aquí después de la llamada...</div>
+      </div>
+      <div class="result-col">
+        <div class="result-header">
+          <span class="result-title">💬 Transcripción Completa</span>
+          <button class="result-btn-copy" onclick="copyResultText('call-transcript')">📋 Copiar Transcripción</button>
+        </div>
+        <div id="call-transcript" class="result-box">La transcripción palabra por palabra se mostrará aquí...</div>
+      </div>
+    </div>
+  </div>
 
   <div class="app-header">
     <div class="app-title">Preguntas NEPQ — IUL</div>
@@ -1684,8 +2083,29 @@ body {
     </div>
   </div>
 
-</div><!-- /wrap -->
 <div class="toast" id="toast"></div>
+
+<!-- PANEL LATERAL DESLIZANTE DE OBJECIONES (DRAWER) -->
+<button class="float-btn" onclick="toggleObjectionsDrawer(true)">⚠️ Objeciones</button>
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleObjectionsDrawer(false)"></div>
+<div class="drawer" id="objections-drawer">
+  <div class="drawer-header">
+    <div class="drawer-title">⚠️ Panel de Objeciones Comunes</div>
+    <button class="drawer-close" onclick="toggleObjectionsDrawer(false)">&times;</button>
+  </div>
+  <div class="drawer-body">
+    <div class="acc-item" id="acc-item-unano">
+      <div class="acc-header" onclick="toggleAccordion('acc-item-unano')">
+        <span>¿Puedo sacar el dinero en un año?</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-content">
+        <div class="acc-inner" id="objection-unano-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ─── CASE CONTENT ───────────────────────────────────────────
 const CASES = {
@@ -2062,7 +2482,459 @@ function setType(type) {
   });
 }
 
+// ─── CO-PILOTO DE TRANSCRIPCIÓN & OBJECIONES ────────────────
+const OBJECTION_UNANO_CONTENT = `### **Manejo de la Objeción: *"¿Puedo sacar mi dinero en un año si quiero?"***
+
+---
+
+**Paso 1: Validar sin confirmar ni negar todavía**
+
+*"Mira, me alegra que me hagas esa pregunta porque es importante que esto quede bien claro desde el principio."*
+
+---
+
+**Paso 2: Anclar al objetivo del cliente (usar sus propias palabras)**
+
+*"Tú me dijiste que lo que estás buscando es [retiro / fondo para el futuro / construir patrimonio]. ¿Correcto?"*
+
+*(esperar confirmación)*
+
+*"Perfecto. Entonces lo que estamos construyendo aquí no es un fondo de emergencia — eso sería una cuenta de ahorros. Lo que estamos construyendo es un instrumento serio, un plan a mediano y largo plazo que trabaja para ti mientras tú duermes. Y ese tipo de herramienta funciona diferente."*
+
+---
+
+**Paso 3: Usar el marco que ya está en tu presentación (cuenta de cheques)**
+
+*"¿Recuerdas lo que te expliqué de la cuenta de cheques? El 90% de las personas que intentan ahorrar en una cuenta de cheques nunca lo logran — ¿por qué? Porque el dinero está ahí, accesible, y psicológicamente uno lo ve como dinero disponible para gastar."*
+
+*"El IUL funciona de manera diferente precisamente por eso. Está diseñado para que ese dinero trabaje y crezca. No es una tarjeta de débito, no es un Zelle — es tu futuro."*
+
+---
+
+**Paso 4: Ser honesto sobre la liquidez (cash value)**
+
+*"Ahora, siendo totalmente transparente contigo — el IUL sí tiene valor en efectivo que va acumulando con el tiempo. Pero en los primeros meses o el primer año, ese valor acumulado todavía está construyéndose. No es como sacar dinero de un cajero automático al día siguiente."*
+
+*"Técnicamente tienes acceso a ese valor acumulado — pero la cantidad disponible depende de cuánto tiempo llevas aportando y cuánto se ha acumulado. Por eso yo siempre digo: esto no es dinero que deberías necesitar en un año. Si hay dinero que tú sabes que vas a necesitar pronto, eso va en otro lugar — una cuenta de ahorro, un fondo de emergencia aparte."*
+
+---
+
+**Paso 5: La pregunta que redirige (estilo NEPQ)**
+
+*"Déjame preguntarte algo — el dinero que estás pensando poner aquí, ¿es dinero que ya tienes destinado para el retiro o para construir tu futuro, o es dinero que posiblemente necesites para algo el próximo año?"*
+
+*(Si dice que puede necesitarlo pronto:)*
+
+*"Perfecto, entonces lo que hacemos es separarlo — una parte va a un fondo de emergencia, y lo que sí está destinado a tu futuro, eso es lo que trabajamos en el IUL. ¿Cuánto crees tú que podrías comprometer mensualmente como dinero que realmente es para tu retiro?"*
+
+*(Si dice que es para el futuro:)*
+
+*"Entonces estamos bien. Ese dinero está en el lugar correcto."*
+
+---
+
+**Paso 6: Reencuadre final — el instrumento serio**
+
+*"Mira, los americanos que se retiran bien no son los que tenían todo disponible todo el tiempo. Son los que tuvieron la disciplina de tratar cierto dinero de manera diferente — como patrimonio, no como gasto. Eso es exactamente lo que estamos construyendo contigo."*`;
+
+function renderMarkdown(md) {
+  if (!md) return "";
+  return md
+    .replace(/### \*\*(.*?)\*\*/g, '<h3>$1</h3>')
+    .replace(/### (.*?)(?:\n|$)/g, '<h3>$1</h3>')
+    .replace(/## (.*?)(?:\n|$)/g, '<h2>$1</h2>')
+    .replace(/# (.*?)(?:\n|$)/g, '<h1>$1</h1>')
+    .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/---/g, '<hr class="objection-hr">')
+    .replace(/\n\n/g, '<p></p>')
+    .replace(/\n/g, '<br>')
+    .replace(/\[(.*?)\]/g, '<span class="objection-placeholder">[$1]</span>');
+}
+
+function toggleObjectionsDrawer(open) {
+  const drawer = document.getElementById('objections-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  if (open) {
+    drawer.classList.add('open');
+    overlay.classList.add('active');
+    
+    const inner = document.getElementById('objection-unano-content');
+    if (inner && (!inner.innerHTML.trim() || inner.innerHTML.includes('<!--'))) {
+      inner.innerHTML = renderMarkdown(OBJECTION_UNANO_CONTENT);
+    }
+  } else {
+    drawer.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+}
+
+function toggleObjectionsPanel(open) {
+  toggleObjectionsDrawer(open);
+}
+
+function toggleAccordion(itemId) {
+  const item = document.getElementById(itemId);
+  if (!item) return;
+  const content = item.querySelector('.acc-content');
+  if (!content) return;
+  
+  const isOpen = item.classList.contains('open');
+  
+  document.querySelectorAll('.acc-item').forEach(i => {
+    i.classList.remove('open');
+    const c = i.querySelector('.acc-content');
+    if (c) c.style.maxHeight = null;
+  });
+  
+  if (!isOpen) {
+    item.classList.add('open');
+    content.style.maxHeight = content.scrollHeight + "px";
+  }
+}
+
+// ─── TRANSCRIPCIÓN Y CO-PILOTO GEMINI ───────────────────────
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+// Flujos globales para captura dual y limpieza
+let micStream = null;
+let displayStream = null;
+let audioContext = null;
+let allTracks = [];
+
+function initApiKey() {
+  const savedKey = localStorage.getItem('gemini_api_key');
+  if (savedKey) {
+    document.getElementById('gemini-api-key').value = savedKey.trim();
+  }
+}
+
+function saveApiKey(key) {
+  localStorage.setItem('gemini_api_key', key.trim());
+  showToast("Clave API guardada en el navegador ✓");
+}
+
+async function startRecording() {
+  const btn = document.getElementById('record-btn');
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  
+  if (isRecording) return;
+  
+  try {
+    showToast("Paso 1: Capturando micrófono...");
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    
+    showToast("Paso 2: Selecciona la pestaña de tu software de llamadas con 'Compartir audio'...");
+    displayStream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: true
+    });
+    
+    // Inicializar AudioContext para mezcla digital
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const micSource = audioContext.createMediaStreamSource(micStream);
+    const mixedDestination = audioContext.createMediaStreamDestination();
+    
+    // Conectar micrófono al destino de mezcla
+    micSource.connect(mixedDestination);
+    
+    // Conectar audio interno de la pestaña si está disponible
+    const displayAudioTracks = displayStream.getAudioTracks();
+    if (displayAudioTracks.length > 0) {
+      const displaySource = audioContext.createMediaStreamSource(new MediaStream([displayAudioTracks[0]]));
+      displaySource.connect(mixedDestination);
+    } else {
+      showToast("⚠️ Advertencia: No se seleccionó 'Compartir audio' en la pestaña. Solo se grabará tu micrófono.");
+    }
+    
+    const mixedStream = mixedDestination.stream;
+    
+    // Compilar todos los tracks para detenerlos al finalizar
+    allTracks = [
+      ...micStream.getTracks(),
+      ...displayStream.getTracks()
+    ];
+    
+    // Iniciar grabador con la mezcla
+    mediaRecorder = new MediaRecorder(mixedStream, { mimeType: 'audio/webm' });
+    audioChunks = [];
+    
+    mediaRecorder.ondataavailable = event => {
+      if (event.data.size > 0) {
+        audioChunks.push(event.data);
+      }
+    };
+    
+    mediaRecorder.onstop = () => {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      processAudioWithGemini(audioBlob);
+    };
+    
+    mediaRecorder.start();
+    isRecording = true;
+    
+    if (btn) {
+      btn.textContent = "⏹️ Detener Transcripción";
+      btn.classList.add('active');
+    }
+    if (dot) dot.className = "status-indicator recording";
+    if (text) text.textContent = "Grabando (Mic + Pestaña)...";
+    showToast("Grabación dual iniciada con éxito 🎙️💻");
+  } catch (err) {
+    console.error("Error al iniciar grabación dual:", err);
+    showToast("⚠️ Grabación cancelada o error de permisos");
+    cleanupRecordingStreams();
+  }
+}
+
+function cleanupRecordingStreams() {
+  if (allTracks && allTracks.length > 0) {
+    allTracks.forEach(track => {
+      try { track.stop(); } catch(e) {}
+    });
+    allTracks = [];
+  }
+  
+  if (audioContext && audioContext.state !== 'closed') {
+    audioContext.close().catch(e => console.error("Error al cerrar AudioContext:", e));
+  }
+  
+  micStream = null;
+  displayStream = null;
+  audioContext = null;
+}
+
+function stopRecording() {
+  const btn = document.getElementById('record-btn');
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  
+  if (!isRecording) return;
+  
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+  
+  cleanupRecordingStreams();
+  isRecording = false;
+  
+  if (btn) {
+    btn.textContent = "🎙️ Transcribir Llamada";
+    btn.classList.remove('active');
+  }
+  if (dot) dot.className = "status-indicator processing";
+  if (text) text.textContent = "Procesando con Gemini...";
+  showToast("Audio dual capturado. Mezclando y analizando...");
+}
+
+function toggleRecording() {
+  if (!isRecording) {
+    startRecording();
+  } else {
+    stopRecording();
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result.split(',')[1];
+      resolve(base64data);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function processAudioWithGemini(audioBlob) {
+  const text = document.getElementById('status-text');
+  const dot = document.getElementById('status-dot');
+  
+  // 1. CAPTURA Y LOG DE SEGURIDAD
+  const keyInput = document.querySelector('input[type="text"]'); 
+  const apiKey = keyInput ? keyInput.value.trim() : '';
+  console.log("LLAMADA API - Clave detectada en interfaz:", apiKey ? "SÍ (empieza por " + apiKey.substring(0,5) + ")" : "NO (VACÍA)");
+  
+  if (!apiKey) {
+    showToast("⚠️ Falta configurar la API Key de Gemini");
+    text.textContent = "Inactivo (Falta API Key)";
+    dot.className = "status-indicator";
+    return;
+  }
+  
+  try {
+    let base64Audio = await blobToBase64(audioBlob);
+    // LIMPIEZA ADICIONAL DEL BASE64
+    if (base64Audio.includes(",")) {
+      base64Audio = base64Audio.split(",")[1];
+    }
+    
+    const systemPrompt = `REGLA DE CONTEXTO REAL: Si el audio es una prueba corta de pocos segundos o contiene palabras sueltas, NO inventes datos de seguros falsos. En su lugar, simplemente genera la estructura Markdown normal de la aplicación, colocando en el título '# TRANSCRIPCIÓN' las palabras exactas que escuchaste, y en el '# RESUMEN' escribe un texto que diga: '🎙️ Conexión dual y API estables. El sistema está capturando el audio limpiamente y el modelo 2.5-flash respondió con éxito. ¡Listo para llamadas reales!'
+
+PROHIBICIÓN DE ALUCINACIONES: Está estrictamente prohibido generar datos médicos, de seguros o de clientes falsos si el audio no los contiene (por ejemplo, inventar nombres de clientes, cirugías o condiciones de salud ficticias). Si no hay datos legibles del cliente en la conversación, deja las secciones correspondientes en blanco o con una nota indicando que no se mencionaron en el audio, permitiendo que el flujo termine con éxito y mostrando únicamente lo que se haya hablado.
+
+Si el audio contiene una conversación real y verídica con datos de llamada de seguros, analízalo y genera un texto en Markdown limpio con las siguientes secciones obligatorias:
+1. DATOS PERSONALES DEL CLIENTE (Nombre, edad, ubicación, etc.).
+2. HISTORIAL MÉDICO (Médico primario, lista de cirugías previas con fechas si se mencionan, enfermedades o condiciones de salud señaladas).
+3. DETALLES IMPORTANTES (Notas clave o comentarios específicos que el cliente haya enfatizado).
+4. OBJECIONES DE LA LLAMADA (Todas las dudas, quejas o barreras que puso el cliente durante la llamada).
+5. TRANSCRIPCIÓN COMPLETA (El script íntegro de la llamada palabra por palabra).`;
+
+    // 2. ARMADO EXPLÍCITO DE LA URL CON GEMINI 2.5 FLASH (ESTABLE V1)
+    const url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" + apiKey;
+    console.log("URL de destino final:", url.substring(0, 90) + "...");
+    
+    // 3. HEADERS LIMPIOS
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: systemPrompt },
+              {
+                inlineData: {
+                  mimeType: 'audio/webm',
+                  data: base64Audio
+                }
+              }
+            ]
+          }
+        ]
+      })
+    });
+    
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error?.message || `HTTP ${response.status}`);
+    }
+    
+    const result = await response.json();
+    const modelText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    
+    if (!modelText) {
+      throw new Error("No se recibió respuesta válida del modelo");
+    }
+    
+    parseAndDisplayGeminiResponse(modelText);
+    
+    text.textContent = "Completado";
+    dot.className = "status-indicator";
+    showToast("Análisis completado con éxito ✓");
+  } catch (error) {
+    console.error("Error al procesar con Gemini:", error);
+    text.textContent = "Error";
+    dot.className = "status-indicator";
+    showToast(`⚠️ Error: ${error.message}`);
+  }
+}
+
+function parseAndDisplayGeminiResponse(text) {
+  let summary = "";
+  let transcript = "";
+  
+  const errorMsg = "⚠️ Error: No se detectó una conversación legible en el audio de la llamada. Por favor, asegúrate de haber compartido el audio de la pestaña correcta y de que el micrófono esté capturando voz.";
+  
+  if (text.includes("No se detectó una conversación legible") || text.includes("Error: No se detectó")) {
+    document.getElementById('call-summary').innerHTML = `<div style="color: #f87171; font-weight: 500; padding: 4px 0;">${errorMsg}</div>`;
+    document.getElementById('call-transcript').innerHTML = `<div style="color: #94a3b8; font-style: italic; padding: 4px 0;">Grabación fallida o sin contenido legible.</div>`;
+    showToast("⚠️ Conversación no legible en el audio");
+    return;
+  }
+  
+  try {
+    let cleanText = text.trim();
+    if (cleanText.startsWith("```")) {
+      cleanText = cleanText.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+    }
+    const parsed = JSON.parse(cleanText);
+    
+    if (parsed.resumen && parsed.transcripcion) {
+      summary = parsed.resumen;
+      transcript = parsed.transcripcion;
+    } else if (parsed["DATOS PERSONALES DEL CLIENTE"] || parsed["1. DATOS PERSONALES DEL CLIENTE"]) {
+      const sections = [
+        "DATOS PERSONALES DEL CLIENTE",
+        "HISTORIAL MÉDICO",
+        "DETALLES IMPORTANTES",
+        "OBJECIONES DE LA LLAMADA"
+      ];
+      sections.forEach((sec, idx) => {
+        const val = parsed[sec] || parsed[`${idx+1}. ${sec}`] || parsed[sec.toLowerCase()];
+        if (val) {
+          summary += `### ${sec}\n${val}\n\n`;
+        }
+      });
+      transcript = parsed["TRANSCRIPCIÓN COMPLETA"] || parsed["5. TRANSCRIPCIÓN COMPLETA"] || parsed["transcripcion"] || "";
+    }
+  } catch (e) {
+    const splitKeywords = [
+      "5. TRANSCRIPCIÓN COMPLETA",
+      "5. TRANSCRIPCION COMPLETA",
+      "TRANSCRIPCIÓN COMPLETA",
+      "TRANSCRIPCION COMPLETA",
+      "5. TRANSCRIPCI",
+      "# TRANSCRIPCIÓN",
+      "# TRANSCRIPCION",
+      "### TRANSCRIPCIÓN",
+      "### TRANSCRIPCION",
+      "TRANSCRIPCIÓN",
+      "TRANSCRIPCION"
+    ];
+    let splitIndex = -1;
+    let matchedKeyword = "";
+    
+    for (const keyword of splitKeywords) {
+      splitIndex = text.toUpperCase().indexOf(keyword.toUpperCase());
+      if (splitIndex !== -1) {
+        matchedKeyword = keyword;
+        break;
+      }
+    }
+    
+    if (splitIndex !== -1) {
+      summary = text.substring(0, splitIndex).trim();
+      transcript = text.substring(splitIndex + matchedKeyword.length).trim();
+      transcript = transcript.replace(/^[:\-\s\n\r]+/, "");
+    } else {
+      summary = text;
+      transcript = "No se pudo separar automáticamente la transcripción palabra por palabra. Por favor, revise el resumen.";
+    }
+  }
+  
+  document.getElementById('call-summary').innerHTML = renderMarkdown(summary) || "No se generó resumen.";
+  document.getElementById('call-transcript').innerHTML = renderMarkdown(transcript) || "No se generó transcripción.";
+}
+
+function copyResultText(elementId) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  
+  const textToCopy = el.textContent.trim();
+  if (!textToCopy || textToCopy.startsWith("Los resultados") || textToCopy.startsWith("La transcripción")) {
+    showToast("⚠️ No hay contenido para copiar");
+    return;
+  }
+  
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    showToast("Copiado al portapapeles ✓");
+  }).catch(err => {
+    console.error("Error al copiar:", err);
+    showToast("⚠️ Error al copiar");
+  });
+}
+
 // ─── INIT ─────────────────────────────────────────────────────
+initApiKey();
 buildCases();
 buildPresentacion();
 setType('all');
